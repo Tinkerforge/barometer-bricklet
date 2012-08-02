@@ -29,6 +29,8 @@
 
 #include "barometer.h"
 
+#define BOARD_MCK 64000000
+
 #define BRICKLET_HARDWARE_NAME "Barometer Bricklet 1.0"
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 1
 #define BRICKLET_FIRMWARE_VERSION_MINOR 0
@@ -58,6 +60,8 @@ typedef struct {
 	int32_t  threshold_min_save[NUM_SIMPLE_VALUES];
 	int32_t  threshold_max_save[NUM_SIMPLE_VALUES];
 	char     threshold_option_save[NUM_SIMPLE_VALUES];
+
+	uint16_t calibration[6];
 
 	uint32_t tick;
 } BrickContext;

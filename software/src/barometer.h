@@ -24,6 +24,32 @@
 
 #include <stdint.h>
 
+#define I2C_EEPROM_ADDRESS_HIGH 84
+
+#define I2C_ADDRESS_HIGH 118 // 0b1110111
+#define I2C_ADDRESS_LOW 119 // 0b1110110
+
+#define I2C_INTERNAL_ADDRESS_BYTES 1
+
+// MS561101BA registers
+#define MS561101BA_D1               0x40
+#define MS561101BA_D2               0x50
+#define MS561101BA_RESET            0x1E
+#define MS561101BA_RESULT_SIZE      3
+
+// Over Sampling Ratio constants
+#define MS561101BA_OSR_256          0x00
+#define MS561101BA_OSR_512          0x02
+#define MS561101BA_OSR_1024         0x04
+#define MS561101BA_OSR_2048         0x06
+#define MS561101BA_OSR_4096         0x08
+
+// Calibration values
+#define MS561101BA_PROM_ADDR        0xA2
+#define MS561101BA_PROM_LENGTH      6
+#define MS561101BA_PROM_SIZE        2
+
+
 #define TYPE_GET_AIR_PRESSURE 1
 #define TYPE_GET_ALTITUDE 2
 #define TYPE_GET_TEMPERATURE 3
@@ -52,6 +78,10 @@
 int32_t get_air_pressure(int32_t value);
 int32_t get_altitude(int32_t value);
 int32_t get_temperature(int32_t value);
+
+uint8_t ms561101b_get_address(void);
+void ms561101b_reset(void);
+void ms561101b_read_calibration(void);
 
 void invocation(uint8_t com, uint8_t *data);
 void constructor(void);
