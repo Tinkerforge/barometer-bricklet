@@ -36,8 +36,8 @@
 #define BRICKLET_FIRMWARE_VERSION_MINOR 0
 #define BRICKLET_FIRMWARE_VERSION_REVISION 0
 
-#define LOGGING_LEVEL LOGGING_DEBUG
-#define DEBUG_BRICKLET 0
+#define LOGGING_LEVEL LOGGING_NONE
+#define DEBUG_BRICKLET 1
 
 #define BRICKLET_NO_OFFSET
 #define BRICKLET_HAS_SIMPLE_SENSOR
@@ -45,8 +45,8 @@
 #define NUM_SIMPLE_VALUES 3
 
 typedef struct {
-	int32_t value[NUM_SIMPLE_VALUES];
-	int32_t last_value[NUM_SIMPLE_VALUES];
+	int32_t  value[NUM_SIMPLE_VALUES];
+	int32_t  last_value[NUM_SIMPLE_VALUES];
 
 	uint32_t signal_period[NUM_SIMPLE_VALUES];
 	uint32_t signal_period_counter[NUM_SIMPLE_VALUES];
@@ -61,9 +61,17 @@ typedef struct {
 	int32_t  threshold_max_save[NUM_SIMPLE_VALUES];
 	char     threshold_option_save[NUM_SIMPLE_VALUES];
 
-	uint16_t calibration[6];
-
 	uint32_t tick;
+
+	uint16_t calibration[6];
+	uint8_t counter;
+	uint8_t pending_d;
+	uint32_t d[2];
+
+	int32_t air_pressure;
+	int32_t reference_air_pressure;
+	int32_t altitude;
+	int32_t temperature;
 } BrickContext;
 
 #endif
