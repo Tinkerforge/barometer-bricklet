@@ -8,7 +8,7 @@ PROJECT(${PROJECT_NAME})
 
 # Optimization level, can be [0, 1, 2, 3, s]. 
 # 0 = turn off optimization. s = optimize for size.
-SET(OPTIMIZATION_LEVEL 2)
+SET(OPTIMIZATION_LEVEL 1)
 SET(DEBUG "")
 
 SET(CMAKE_BUILD_TYPE None)
@@ -33,7 +33,7 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}.elf PROPERTIES LINKER_LANGUAGE C)
 
 # define compile flags 
 SET_TARGET_PROPERTIES(${PROJECT_NAME}.elf PROPERTIES COMPILE_FLAGS
-	"${DEBUG} -mcpu=${MCU} -std=gnu99  -Wall -mlong-calls -ffunction-sections -O${OPTIMIZATION_LEVEL} -fPIE -pie"
+	"${DEBUG} -mcpu=${MCU} -std=gnu99  -Wall -mlong-calls -ffunction-sections -O${OPTIMIZATION_LEVEL} -fPIE -pie -DSIMPLE_VALUE_TYPE=int32_t"
 )
 
 #define linker flags 

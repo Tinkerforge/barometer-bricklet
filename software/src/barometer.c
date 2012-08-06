@@ -51,9 +51,9 @@ const SimpleMessageProperty smp[] = {
 };
 
 const SimpleUnitProperty sup[] = {
-	{get_air_pressure, SIMPLE_SIGNEDNESS_INT, TYPE_AIR_PRESSURE, TYPE_AIR_PRESSURE_REACHED, SIMPLE_UNIT_AIR_PRESSURE}, // air pressure
-	{get_altitude, SIMPLE_SIGNEDNESS_INT, TYPE_ALTITUDE, TYPE_ALTITUDE_REACHED, SIMPLE_UNIT_ALTITUDE}, // altitude
-	{get_temperature, SIMPLE_SIGNEDNESS_INT, TYPE_TEMPERATURE, TYPE_TEMPERATURE_REACHED, SIMPLE_UNIT_TEMPERATURE} // temperature
+	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_AIR_PRESSURE, TYPE_AIR_PRESSURE_REACHED, SIMPLE_UNIT_AIR_PRESSURE}, // air pressure
+	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_ALTITUDE, TYPE_ALTITUDE_REACHED, SIMPLE_UNIT_ALTITUDE}, // altitude
+	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_TEMPERATURE, TYPE_TEMPERATURE_REACHED, SIMPLE_UNIT_TEMPERATURE} // temperature
 };
 
 void invocation(uint8_t com, uint8_t *data) {
@@ -72,13 +72,17 @@ void constructor(void) {
 	simple_constructor();
 
 	BC->counter = 0;
-	BC->pending_d = 0;
+	BC->pending_d = 1;
 	BC->d[0] = 0;
 	BC->d[1] = 0;
-	BC->air_pressure = 0;
-	BC->reference_air_pressure = 0;
-	BC->altitude = 0;
-	BC->temperature = 0;
+
+	for(uint8_t i = 0; i < NUM_MOVING_AVERAGE; i++) {
+		BC->moving_average[i] = 0;
+	}
+	BC->moving_average_tick = 255;
+	BC->moving_average_sum = 0;
+
+	BC->reference = 0;
 
 	ms561101b_write(MS561101BA_RESET);
 	SLEEP_MS(5);
@@ -125,7 +129,7 @@ void tick(uint8_t tick_type) {
 				off -= k >> 1;
 				sens -= k >> 2;
 
-				if (temp < -1500) {
+				if(temp < -1500) {
 					int32_t n = (temp + 1500) * (temp + 1500);
 
 					off -= 7 * n;
@@ -133,37 +137,46 @@ void tick(uint8_t tick_type) {
 				}
 			}
 
-			BC->air_pressure = ((((int64_t)BC->d[0] * sens) >> 21) - off) >> 15;
+			int32_t air_pressure = ((((int64_t)BC->d[0] * sens) >> 21) - off) >> (15 - EXTRA_PRECISION);
 
-			// altitude, assume 0.001 mbar difference per cm
-			BC->altitude = (BC->reference_air_pressure - BC->air_pressure) * 10;
+			if (BC->moving_average_tick == 255) {
+				for(uint8_t i = 0; i < NUM_MOVING_AVERAGE; i++) {
+					BC->moving_average[i] = air_pressure;
+				}
 
-			// temperature
-			if(temp < 2000) {
-				BC->temperature = temp - (((int64_t)dt * (int64_t)dt) >> 31);
-			} else {
-				BC->temperature = temp;
+				BC->moving_average_sum = air_pressure * NUM_MOVING_AVERAGE;
+				BC->moving_average_tick = 0;
 			}
 
-			BA->printf("p: %d, t: %d, a: %d\n\r", get_air_pressure(0), get_temperature(0), get_altitude(0));
+			BC->moving_average_sum = BC->moving_average_sum -
+			                         BC->moving_average[BC->moving_average_tick] +
+			                         air_pressure;
+			BC->moving_average[BC->moving_average_tick] = air_pressure;
+			BC->moving_average_tick = (BC->moving_average_tick + 1) % NUM_MOVING_AVERAGE;
+
+			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = (BC->moving_average_sum + NUM_MOVING_AVERAGE / 2) / ((1 << EXTRA_PRECISION) * NUM_MOVING_AVERAGE);
+
+			// altitude, assume 0.001 mbar difference per cm
+			int32_t altitude = ((BC->reference - BC->moving_average_sum) * 10) / ((1 << EXTRA_PRECISION) * NUM_MOVING_AVERAGE);
+
+			BC->value[SIMPLE_UNIT_ALTITUDE] = altitude;
+
+			// temperature
+			int32_t temperature = temp;
+
+			if(temp < 2000) {
+				temperature -= ((int64_t)dt * (int64_t)dt) >> 31;
+			}
+
+			BC->value[SIMPLE_UNIT_TEMPERATURE] = temperature;
+
+			BA->printf("p: %d, a: %d, t: %d\n\r", BC->value[SIMPLE_UNIT_AIR_PRESSURE], BC->value[SIMPLE_UNIT_ALTITUDE], BC->value[SIMPLE_UNIT_TEMPERATURE]);
 		}
 	}
 }
 
-int32_t get_air_pressure(int32_t value) {
-	return BC->air_pressure;
-}
-
-int32_t get_altitude(int32_t value) {
-	return BC->altitude;
-}
-
-int32_t get_temperature(int32_t value) {
-	return BC->temperature;
-}
-
 void calibrate_altitude(uint8_t com, CalibrateAltitude *data) {
-	BC->reference_air_pressure = BC->air_pressure;
+	BC->reference = BC->moving_average_sum;
 }
 
 uint8_t ms561101b_get_address(void) {

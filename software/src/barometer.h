@@ -86,10 +86,6 @@ typedef struct {
 	uint16_t length;
 } __attribute__((__packed__)) CalibrateAltitude;
 
-int32_t get_air_pressure(int32_t value);
-int32_t get_altitude(int32_t value);
-int32_t get_temperature(int32_t value);
-
 void calibrate_altitude(uint8_t com, CalibrateAltitude *data);
 
 uint8_t ms561101b_get_address(void);

@@ -39,10 +39,12 @@
 #define LOGGING_LEVEL LOGGING_NONE
 #define DEBUG_BRICKLET 1
 
-#define BRICKLET_NO_OFFSET
 #define BRICKLET_HAS_SIMPLE_SENSOR
+#define BRICKLET_VALUE_APPLIED_OUTSIDE
 #define INVOCATION_IN_BRICKLET_CODE
 #define NUM_SIMPLE_VALUES 3
+#define NUM_MOVING_AVERAGE 24
+#define EXTRA_PRECISION 5
 
 typedef struct {
 	int32_t  value[NUM_SIMPLE_VALUES];
@@ -68,10 +70,11 @@ typedef struct {
 	uint8_t pending_d;
 	uint32_t d[2];
 
-	int32_t air_pressure;
-	int32_t reference_air_pressure;
-	int32_t altitude;
-	int32_t temperature;
-} BrickContext;
+	int32_t moving_average[NUM_MOVING_AVERAGE];
+	int32_t moving_average_sum;
+	uint8_t moving_average_tick;
+
+	int32_t reference;
+} __attribute__((packed)) BrickContext;
 
 #endif
