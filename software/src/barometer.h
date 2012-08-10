@@ -44,11 +44,15 @@
 #define MS561101BA_OSR_2048         0x06
 #define MS561101BA_OSR_4096         0x08
 
+#define MS561101BA_OSR MS561101BA_OSR_4096
+
 #define MS561101BA_OSR_256_COUNTER  0
 #define MS561101BA_OSR_512_COUNTER  1
 #define MS561101BA_OSR_1024_COUNTER 2
 #define MS561101BA_OSR_2048_COUNTER 4
 #define MS561101BA_OSR_4096_COUNTER 9
+
+#define MS561101BA_OSR_COUNTER MS561101BA_OSR_4096_COUNTER
 
 // Calibration values
 #define MS561101BA_PROM_ADDR        0xA2
@@ -62,23 +66,30 @@
 #define TYPE_GET_AIR_PRESSURE_CALLBACK_PERIOD 5
 #define TYPE_SET_ALTITUDE_CALLBACK_PERIOD 6
 #define TYPE_GET_ALTITUDE_CALLBACK_PERIOD 7
-#define TYPE_SET_TEMPERATURE_CALLBACK_PERIOD 8
-#define TYPE_GET_TEMPERATURE_CALLBACK_PERIOD 9
-#define TYPE_SET_AIR_PRESSURE_CALLBACK_THRESHOLD 10
-#define TYPE_GET_AIR_PRESSURE_CALLBACK_THRESHOLD 11
-#define TYPE_SET_ALTITUDE_CALLBACK_THRESHOLD 12
-#define TYPE_GET_ALTITUDE_CALLBACK_THRESHOLD 13
-#define TYPE_SET_TEMPERATURE_CALLBACK_THRESHOLD 14
-#define TYPE_GET_TEMPERATURE_CALLBACK_THRESHOLD 15
-#define TYPE_SET_DEBOUNCE_PERIOD 16
-#define TYPE_GET_DEBOUNCE_PERIOD 17
-#define TYPE_CALIBRATE_ALTITUDE 18
-#define TYPE_AIR_PRESSURE 19
-#define TYPE_AIR_PRESSURE_REACHED 20
-#define TYPE_ALTITUDE 21
-#define TYPE_ALTITUDE_REACHED 22
-#define TYPE_TEMPERATURE 23
-#define TYPE_TEMPERATURE_REACHED 24
+#define TYPE_SET_AIR_PRESSURE_CALLBACK_THRESHOLD 8
+#define TYPE_GET_AIR_PRESSURE_CALLBACK_THRESHOLD 9
+#define TYPE_SET_ALTITUDE_CALLBACK_THRESHOLD 10
+#define TYPE_GET_ALTITUDE_CALLBACK_THRESHOLD 11
+#define TYPE_SET_DEBOUNCE_PERIOD 12
+#define TYPE_GET_DEBOUNCE_PERIOD 13
+#define TYPE_CALIBRATE_ALTITUDE 14
+#define TYPE_AIR_PRESSURE 15
+#define TYPE_ALTITUDE 16
+#define TYPE_AIR_PRESSURE_REACHED 17
+#define TYPE_ALTITUDE_REACHED 18
+
+typedef struct {
+	uint8_t stack_id;
+	uint8_t type;
+	uint16_t length;
+} __attribute__((__packed__)) GetTemperature;
+
+typedef struct {
+	uint8_t stack_id;
+	uint8_t type;
+	uint16_t length;
+	int16_t temperature;
+} __attribute__((__packed__)) GetTemperatureReturn;
 
 typedef struct {
 	uint8_t stack_id;
@@ -86,6 +97,7 @@ typedef struct {
 	uint16_t length;
 } __attribute__((__packed__)) CalibrateAltitude;
 
+void get_temperature(uint8_t com, GetTemperature *data);
 void calibrate_altitude(uint8_t com, CalibrateAltitude *data);
 
 uint8_t ms561101b_get_address(void);

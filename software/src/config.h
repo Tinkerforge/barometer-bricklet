@@ -42,9 +42,13 @@
 #define BRICKLET_HAS_SIMPLE_SENSOR
 #define BRICKLET_VALUE_APPLIED_OUTSIDE
 #define INVOCATION_IN_BRICKLET_CODE
-#define NUM_SIMPLE_VALUES 3
-#define NUM_MOVING_AVERAGE 24
+#define NUM_SIMPLE_VALUES 2
+
+#define NUM_D1_AVERAGE 10
+#define NUM_D2_AVERAGE 10
+#define NUM_D1_MOVING_AVERAGE 25
 #define EXTRA_PRECISION 5
+#define REFERENCE_AIR_PRESSURE 101325
 
 typedef struct {
 	int32_t  value[NUM_SIMPLE_VALUES];
@@ -68,13 +72,24 @@ typedef struct {
 	uint16_t calibration[6];
 	uint8_t counter;
 	uint8_t pending_d;
-	uint32_t d[2];
 
-	int32_t moving_average[NUM_MOVING_AVERAGE];
-	int32_t moving_average_sum;
-	uint8_t moving_average_tick;
+	uint32_t d1_avg_sum;
+	uint8_t d1_avg_tick;
 
-	int32_t reference;
+	uint32_t d1_moving_avg_history[NUM_D1_MOVING_AVERAGE];
+	uint32_t d1_moving_avg_sum;
+	uint8_t d1_moving_avg_tick;
+	uint32_t d1_moving_avg;
+
+	uint32_t d2_avg_sum;
+	uint8_t d2_avg_tick;
+	uint32_t d2_avg;
+
+	int32_t air_pressure_extra;
+	int32_t air_pressure_extra_ref;
+	uint8_t auto_calibrate_counter;
+
+	int16_t temperature;
 } __attribute__((packed)) BrickContext;
 
 #endif
