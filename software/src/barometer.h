@@ -61,18 +61,18 @@
 
 #define TYPE_GET_AIR_PRESSURE 1
 #define TYPE_GET_ALTITUDE 2
-#define TYPE_GET_TEMPERATURE 3
-#define TYPE_SET_AIR_PRESSURE_CALLBACK_PERIOD 4
-#define TYPE_GET_AIR_PRESSURE_CALLBACK_PERIOD 5
-#define TYPE_SET_ALTITUDE_CALLBACK_PERIOD 6
-#define TYPE_GET_ALTITUDE_CALLBACK_PERIOD 7
-#define TYPE_SET_AIR_PRESSURE_CALLBACK_THRESHOLD 8
-#define TYPE_GET_AIR_PRESSURE_CALLBACK_THRESHOLD 9
-#define TYPE_SET_ALTITUDE_CALLBACK_THRESHOLD 10
-#define TYPE_GET_ALTITUDE_CALLBACK_THRESHOLD 11
-#define TYPE_SET_DEBOUNCE_PERIOD 12
-#define TYPE_GET_DEBOUNCE_PERIOD 13
-#define TYPE_CALIBRATE_ALTITUDE 14
+#define TYPE_SET_AIR_PRESSURE_CALLBACK_PERIOD 3
+#define TYPE_GET_AIR_PRESSURE_CALLBACK_PERIOD 4
+#define TYPE_SET_ALTITUDE_CALLBACK_PERIOD 5
+#define TYPE_GET_ALTITUDE_CALLBACK_PERIOD 6
+#define TYPE_SET_AIR_PRESSURE_CALLBACK_THRESHOLD 7
+#define TYPE_GET_AIR_PRESSURE_CALLBACK_THRESHOLD 8
+#define TYPE_SET_ALTITUDE_CALLBACK_THRESHOLD 9
+#define TYPE_GET_ALTITUDE_CALLBACK_THRESHOLD 12
+#define TYPE_SET_DEBOUNCE_PERIOD 11
+#define TYPE_GET_DEBOUNCE_PERIOD 12
+#define TYPE_CALIBRATE_ALTITUDE 13
+#define TYPE_GET_CHIP_TEMPERATURE_ 14
 #define TYPE_AIR_PRESSURE 15
 #define TYPE_ALTITUDE 16
 #define TYPE_AIR_PRESSURE_REACHED 17
@@ -82,14 +82,14 @@ typedef struct {
 	uint8_t stack_id;
 	uint8_t type;
 	uint16_t length;
-} __attribute__((__packed__)) GetTemperature;
+} __attribute__((__packed__)) GetChipTemperature_;
 
 typedef struct {
 	uint8_t stack_id;
 	uint8_t type;
 	uint16_t length;
 	int16_t temperature;
-} __attribute__((__packed__)) GetTemperatureReturn;
+} __attribute__((__packed__)) GetChipTemperatureReturn_;
 
 typedef struct {
 	uint8_t stack_id;
@@ -97,8 +97,10 @@ typedef struct {
 	uint16_t length;
 } __attribute__((__packed__)) CalibrateAltitude;
 
-void get_temperature(uint8_t com, GetTemperature *data);
+void get_chip_temperature_(uint8_t com, GetChipTemperature_ *data);
 void calibrate_altitude(uint8_t com, CalibrateAltitude *data);
+
+void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len);
 
 uint8_t ms561101b_get_address(void);
 void ms561101b_write(uint8_t command);

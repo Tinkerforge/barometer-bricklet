@@ -30,45 +30,45 @@
 #define SIMPLE_UNIT_ALTITUDE 1
 
 const SimpleMessageProperty smp[] = {
-	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_VALUE, SIMPLE_DIRECTION_GET}, // TYPE_GET_AIR_PRESSURE
-	{SIMPLE_UNIT_ALTITUDE, SIMPLE_TRANSFER_VALUE, SIMPLE_DIRECTION_GET}, // TYPE_GET_ALTITUDE
-	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_PERIOD, SIMPLE_DIRECTION_SET}, // TYPE_SET_AIR_PRESSURE_CALLBACK_PERIOD
-	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_PERIOD, SIMPLE_DIRECTION_GET}, // TYPE_GET_AIR_PRESSURE_CALLBACK_PERIOD
-	{SIMPLE_UNIT_ALTITUDE, SIMPLE_TRANSFER_PERIOD, SIMPLE_DIRECTION_SET}, // TYPE_SET_ALTITUDE_CALLBACK_PERIOD
-	{SIMPLE_UNIT_ALTITUDE, SIMPLE_TRANSFER_PERIOD, SIMPLE_DIRECTION_GET}, // TYPE_GET_ALTITUDE_CALLBACK_PERIOD
+	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_VALUE,     SIMPLE_DIRECTION_GET}, // TYPE_GET_AIR_PRESSURE
+	{SIMPLE_UNIT_ALTITUDE,     SIMPLE_TRANSFER_VALUE,     SIMPLE_DIRECTION_GET}, // TYPE_GET_ALTITUDE
+	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_PERIOD,    SIMPLE_DIRECTION_SET}, // TYPE_SET_AIR_PRESSURE_CALLBACK_PERIOD
+	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_PERIOD,    SIMPLE_DIRECTION_GET}, // TYPE_GET_AIR_PRESSURE_CALLBACK_PERIOD
+	{SIMPLE_UNIT_ALTITUDE,     SIMPLE_TRANSFER_PERIOD,    SIMPLE_DIRECTION_SET}, // TYPE_SET_ALTITUDE_CALLBACK_PERIOD
+	{SIMPLE_UNIT_ALTITUDE,     SIMPLE_TRANSFER_PERIOD,    SIMPLE_DIRECTION_GET}, // TYPE_GET_ALTITUDE_CALLBACK_PERIOD
 	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_THRESHOLD, SIMPLE_DIRECTION_SET}, // TYPE_SET_AIR_PRESSURE_CALLBACK_THRESHOLD
 	{SIMPLE_UNIT_AIR_PRESSURE, SIMPLE_TRANSFER_THRESHOLD, SIMPLE_DIRECTION_GET}, // TYPE_GET_AIR_PRESSURE_CALLBACK_THRESHOLD
-	{SIMPLE_UNIT_ALTITUDE, SIMPLE_TRANSFER_THRESHOLD, SIMPLE_DIRECTION_SET}, // TYPE_SET_ALTITUDE_CALLBACK_THRESHOLD
-	{SIMPLE_UNIT_ALTITUDE, SIMPLE_TRANSFER_THRESHOLD, SIMPLE_DIRECTION_GET}, // TYPE_GET_ALTITUDE_CALLBACK_THRESHOLD
+	{SIMPLE_UNIT_ALTITUDE,     SIMPLE_TRANSFER_THRESHOLD, SIMPLE_DIRECTION_SET}, // TYPE_SET_ALTITUDE_CALLBACK_THRESHOLD
+	{SIMPLE_UNIT_ALTITUDE,     SIMPLE_TRANSFER_THRESHOLD, SIMPLE_DIRECTION_GET}, // TYPE_GET_ALTITUDE_CALLBACK_THRESHOLD
 	{0, SIMPLE_TRANSFER_DEBOUNCE, SIMPLE_DIRECTION_SET}, // TYPE_SET_DEBOUNCE_PERIOD
 	{0, SIMPLE_TRANSFER_DEBOUNCE, SIMPLE_DIRECTION_GET}, // TYPE_GET_DEBOUNCE_PERIOD
 };
 
 const SimpleUnitProperty sup[] = {
 	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_AIR_PRESSURE, TYPE_AIR_PRESSURE_REACHED, SIMPLE_UNIT_AIR_PRESSURE}, // air pressure
-	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_ALTITUDE, TYPE_ALTITUDE_REACHED, SIMPLE_UNIT_ALTITUDE}, // altitude
+	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_ALTITUDE,     TYPE_ALTITUDE_REACHED,     SIMPLE_UNIT_ALTITUDE}, // altitude
 };
 
 typedef struct {
-	int32_t air_pressure;
-	int32_t factor; // altitude difference in cm per 0.01 mbar air pressure difference
+	int32_t air_pressure; // mbar/1000
+	int32_t factor; // altitude difference in mm per mbar/1000 air pressure difference
 } __attribute__((__packed__)) AltitudeFactor;
 
 const AltitudeFactor altitude_factors[] = {
-	{122500, 14},
-	{111831, 13},
-	{101204, 12},
-	{ 91965, 11},
-	{ 80887, 10},
-	{ 71005,  9},
-	{ 61400,  8},
-	{ 52029,  7}
+	{1225005, 14},
+	{1118311, 13},
+	{1012049, 12},
+	{ 919654, 11},
+	{ 808871, 10},
+	{ 710051,  9},
+	{ 614001,  8},
+	{ 520296,  7}
 };
 
 void invocation(uint8_t com, uint8_t *data) {
 	switch(((SimpleStandardMessage*)data)->type) {
-		case TYPE_GET_TEMPERATURE:
-			get_temperature(com, (GetTemperature*)data);
+		case TYPE_GET_CHIP_TEMPERATURE_:
+			get_chip_temperature_(com, (GetChipTemperature_*)data);
 			return;
 
 		case TYPE_CALIBRATE_ALTITUDE:
@@ -109,13 +109,6 @@ void constructor(void) {
 	ms561101b_write(MS561101BA_RESET);
 	SLEEP_MS(5);
 	ms561101b_read_calibration();
-	/*logbli("calibration: %d %d %d %d %d %d\n\r",
-	       BC->calibration[0],
-	       BC->calibration[1],
-	       BC->calibration[2],
-	       BC->calibration[3],
-	       BC->calibration[4],
-	       BC->calibration[5]);*/
 
 	ms561101b_write(MS561101BA_D1 | MS561101BA_OSR);
 	BC->pending_d = 1;
@@ -123,16 +116,6 @@ void constructor(void) {
 
 void destructor(void) {
 	simple_destructor();
-}
-
-void foobar(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len) {
-	*sum += dx;
-	*tick = (*tick + 1) % avg_len;
-
-	if(*tick == 0) {
-		*avg = (*sum + avg_len / 2) / avg_len;
-		*sum = 0;
-	}
 }
 
 void tick(uint8_t tick_type) {
@@ -147,28 +130,22 @@ void tick(uint8_t tick_type) {
 			uint32_t dx = ms561101b_read_adc();
 
 			if(BC->pending_d == 1) {
-				//BC->d1_avg_sum += dx;
-				//BC->d1_avg_tick = (BC->d1_avg_tick + 1) % NUM_D1_AVERAGE;
-
 				uint32_t d1_avg;
 
-				foobar(dx, &BC->d1_avg_sum, &d1_avg, &BC->d1_avg_tick, NUM_D1_AVERAGE);
+				update_avg(dx, &BC->d1_avg_sum, &d1_avg, &BC->d1_avg_tick, NUM_D1_AVERAGE);
 
-				if(BC->d1_avg_tick == 0 || BC->d1_moving_avg_tick == 255) {
-					/*uint32_t d1_avg = (BC->d1_avg_sum + NUM_D1_AVERAGE / 2) / NUM_D1_AVERAGE;
-					BC->d1_avg_sum = 0;*/
-
+				if(BC->d1_avg_tick == 0/* || BC->d1_moving_avg_tick == 255*/) {
 					if(BC->d1_moving_avg_tick == 255) {
-						for(uint8_t i = 0; i < NUM_D1_MOVING_AVERAGE; i++) {
+						/*for(uint8_t i = 0; i < NUM_D1_MOVING_AVERAGE; i++) {
 							BC->d1_moving_avg_history[i] = d1_avg;
 						}
 
-						BC->d1_moving_avg_sum = d1_avg * NUM_D1_MOVING_AVERAGE;
+						BC->d1_moving_avg_sum = d1_avg * NUM_D1_MOVING_AVERAGE;*/
 						BC->d1_moving_avg_tick = 0;
 					} else {
 						BC->d1_moving_avg_sum = BC->d1_moving_avg_sum -
-												BC->d1_moving_avg_history[BC->d1_moving_avg_tick] +
-												d1_avg;
+						                        BC->d1_moving_avg_history[BC->d1_moving_avg_tick] +
+						                        d1_avg;
 						BC->d1_moving_avg_history[BC->d1_moving_avg_tick] = d1_avg;
 						BC->d1_moving_avg_tick = (BC->d1_moving_avg_tick + 1) % NUM_D1_MOVING_AVERAGE;
 						BC->d1_moving_avg = (BC->d1_moving_avg_sum + NUM_D1_MOVING_AVERAGE / 2) / NUM_D1_MOVING_AVERAGE;
@@ -178,15 +155,7 @@ void tick(uint8_t tick_type) {
 				ms561101b_write(MS561101BA_D2 | MS561101BA_OSR);
 				BC->pending_d = 2;
 			} else {
-				/*BC->d2_avg_sum += dx;
-				BC->d2_avg_tick = (BC->d2_avg_tick + 1) % NUM_D2_AVERAGE;
-
-				if(BC->d2_avg_tick == 0) {
-					BC->d2_avg = (BC->d2_avg_sum + NUM_D2_AVERAGE / 2) / NUM_D2_AVERAGE;
-					BC->d2_avg_sum = 0;
-				}*/
-
-				foobar(dx, &BC->d2_avg_sum, &BC->d2_avg, &BC->d2_avg_tick, NUM_D2_AVERAGE);
+				update_avg(dx, &BC->d2_avg_sum, &BC->d2_avg, &BC->d2_avg_tick, NUM_D2_AVERAGE);
 
 				ms561101b_write(MS561101BA_D1 | MS561101BA_OSR);
 				BC->pending_d = 1;
@@ -214,9 +183,10 @@ void tick(uint8_t tick_type) {
 
 			BC->air_pressure_extra = ((((int64_t)BC->d1_moving_avg * sens) >> 21) - off) >> (15 - EXTRA_PRECISION);
 
-			int32_t air_pressure = BC->air_pressure_extra >> EXTRA_PRECISION;
+			int32_t air_pressure = (BC->air_pressure_extra * 10) >> EXTRA_PRECISION; // mbar/100 -> mbar/1000
 
 			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = air_pressure;
+			//BC->value[SIMPLE_UNIT_AIR_PRESSURE] = BC->d1_moving_avg;
 
 			// altitude
 			if(BC->auto_calibrate_counter != 0) {
@@ -233,7 +203,7 @@ void tick(uint8_t tick_type) {
 			}
 
 			int32_t altitude;
-			int32_t delta = BC->air_pressure_extra_ref - BC->air_pressure_extra;
+			int32_t delta = (BC->air_pressure_extra_ref - BC->air_pressure_extra) * 10; // mbar/100 -> mbar/1000 with extra precision
 
 			if (upper < size - 1) {
 				lower = upper + 1;
@@ -241,15 +211,17 @@ void tick(uint8_t tick_type) {
 				int32_t total_delta = altitude_factors[upper].air_pressure - altitude_factors[lower].air_pressure;
 				int32_t upper_delta = altitude_factors[upper].air_pressure - air_pressure;
 				int32_t lower_delta = air_pressure - altitude_factors[lower].air_pressure;
-				int32_t factor = ((altitude_factors[upper].factor << 8) * lower_delta + (altitude_factors[lower].factor << 8) * upper_delta) / total_delta;
+				int32_t factor = ((altitude_factors[upper].factor << ALTITUDE_INTERPOLATION_PRECISION) * lower_delta +
+				                  (altitude_factors[lower].factor << ALTITUDE_INTERPOLATION_PRECISION) * upper_delta) / total_delta;
 
-				altitude = (delta * factor) / ((1 << 8) * (1 << EXTRA_PRECISION));
+				altitude = (delta * factor) >> (ALTITUDE_INTERPOLATION_PRECISION + EXTRA_PRECISION);
 			} else {
 				lower = upper;
-				altitude = (delta * altitude_factors[upper].factor) << EXTRA_PRECISION;
+				altitude = (delta * altitude_factors[upper].factor) >> EXTRA_PRECISION;
 			}
 
-			BC->value[SIMPLE_UNIT_ALTITUDE] = altitude;
+			BC->value[SIMPLE_UNIT_ALTITUDE] = altitude / 10; // mm -> cm
+			//BC->value[SIMPLE_UNIT_ALTITUDE] = BC->d2_avg;
 
 			// temperature
 			if(temp < 2000) {
@@ -257,26 +229,34 @@ void tick(uint8_t tick_type) {
 			} else {
 				BC->temperature = temp;
 			}
-
-			//BA->printf("p: %d, a: %d, t: %d\n\r", air_pressure, altitude, BC->temperature);
 		}
 	}
 }
 
-void get_temperature(uint8_t com, GetTemperature *data) {
-	GetTemperatureReturn gtr;
+void get_chip_temperature_(uint8_t com, GetChipTemperature_ *data) {
+	GetChipTemperatureReturn_ gtr;
 
 	gtr.stack_id      = data->stack_id;
 	gtr.type          = data->type;
-	gtr.length        = sizeof(GetTemperatureReturn);
+	gtr.length        = sizeof(GetChipTemperatureReturn_);
 	gtr.temperature   = BC->temperature;
 
-	BA->send_blocking_with_timeout(&gtr, sizeof(GetTemperatureReturn), com);
+	BA->send_blocking_with_timeout(&gtr, sizeof(GetChipTemperatureReturn_), com);
 }
 
 void calibrate_altitude(uint8_t com, CalibrateAltitude *data) {
 	BC->air_pressure_extra_ref = BC->air_pressure_extra;
 	BC->auto_calibrate_counter = 0;
+}
+
+void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len) {
+	*sum += dx;
+	*tick = (*tick + 1) % avg_len;
+
+	if(*tick == 0) {
+		*avg = (*sum + avg_len / 2) / avg_len;
+		*sum = 0;
+	}
 }
 
 uint8_t ms561101b_get_address(void) {
