@@ -44,8 +44,8 @@
 #define INVOCATION_IN_BRICKLET_CODE
 #define NUM_SIMPLE_VALUES 2
 
-#define NUM_D1_AVERAGE 15
-#define NUM_D2_AVERAGE 15
+#define NUM_D1_AVERAGE 10
+#define NUM_D2_AVERAGE 10
 #define NUM_D1_MOVING_AVERAGE 25
 #define EXTRA_PRECISION 5
 #define REFERENCE_AIR_PRESSURE 101325
@@ -76,6 +76,7 @@ typedef struct {
 
 	uint32_t d1_avg_sum;
 	uint8_t d1_avg_tick;
+	uint32_t d1_avg;
 
 	uint32_t d1_moving_avg_history[NUM_D1_MOVING_AVERAGE];
 	uint32_t d1_moving_avg_sum;
@@ -88,7 +89,7 @@ typedef struct {
 
 	int32_t air_pressure_extra;
 	int32_t air_pressure_extra_ref;
-	uint8_t auto_calibrate_counter;
+	uint16_t auto_calibrate_counter;
 
 	int16_t temperature;
 } __attribute__((packed)) BrickContext;

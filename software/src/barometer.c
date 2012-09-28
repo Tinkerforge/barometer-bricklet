@@ -88,10 +88,8 @@ void constructor(void) {
 
 	BC->d1_avg_sum = 0;
 	BC->d1_avg_tick = 0;
+	BC->d1_avg = 0;
 
-	for(uint8_t i = 0; i < NUM_D1_MOVING_AVERAGE; i++) {
-		BC->d1_moving_avg_history[i] = 0;
-	}
 	BC->d1_moving_avg_sum = 0;
 	BC->d1_moving_avg_tick = 255;
 	BC->d1_moving_avg = 0;
@@ -102,20 +100,20 @@ void constructor(void) {
 
 	BC->air_pressure_extra = 0;
 	BC->air_pressure_extra_ref = REFERENCE_AIR_PRESSURE << EXTRA_PRECISION;
-	BC->auto_calibrate_counter = 255;
+	BC->auto_calibrate_counter = 15000 / MS561101BA_OSR_COUNTER;
 
 	BC->temperature = 0;
 
 	ms561101b_write(MS561101BA_RESET);
 	SLEEP_MS(5);
 	ms561101b_read_calibration();
-
 	ms561101b_write(MS561101BA_D1 | MS561101BA_OSR);
+
 	BC->pending_d = 1;
 }
 
 void destructor(void) {
-	simple_destructor();
+	//simple_destructor();
 }
 
 void tick(uint8_t tick_type) {
@@ -130,26 +128,25 @@ void tick(uint8_t tick_type) {
 			uint32_t dx = ms561101b_read_adc();
 
 			if(BC->pending_d == 1) {
-				uint32_t d1_avg;
+				update_avg(dx, &BC->d1_avg_sum, &BC->d1_avg, &BC->d1_avg_tick, NUM_D1_AVERAGE);
 
-				update_avg(dx, &BC->d1_avg_sum, &d1_avg, &BC->d1_avg_tick, NUM_D1_AVERAGE);
-
-				if(BC->d1_avg_tick == 0/* || BC->d1_moving_avg_tick == 255*/) {
-					if(BC->d1_moving_avg_tick == 255) {
-						/*for(uint8_t i = 0; i < NUM_D1_MOVING_AVERAGE; i++) {
-							BC->d1_moving_avg_history[i] = d1_avg;
-						}
-
-						BC->d1_moving_avg_sum = d1_avg * NUM_D1_MOVING_AVERAGE;*/
-						BC->d1_moving_avg_tick = 0;
-					} else {
-						BC->d1_moving_avg_sum = BC->d1_moving_avg_sum -
-						                        BC->d1_moving_avg_history[BC->d1_moving_avg_tick] +
-						                        d1_avg;
-						BC->d1_moving_avg_history[BC->d1_moving_avg_tick] = d1_avg;
-						BC->d1_moving_avg_tick = (BC->d1_moving_avg_tick + 1) % NUM_D1_MOVING_AVERAGE;
-						BC->d1_moving_avg = (BC->d1_moving_avg_sum + NUM_D1_MOVING_AVERAGE / 2) / NUM_D1_MOVING_AVERAGE;
+				if(BC->d1_moving_avg_tick == 255) {
+					for(uint8_t i = 0; i < NUM_D1_MOVING_AVERAGE; i++) {
+						BC->d1_moving_avg_history[i] = dx;
 					}
+
+					BC->d1_moving_avg_sum = dx * NUM_D1_MOVING_AVERAGE;
+					BC->d1_moving_avg_tick = 0;
+					BC->d1_moving_avg = dx;
+				}
+
+				if(BC->d1_avg_tick == 0) {
+					BC->d1_moving_avg_sum = BC->d1_moving_avg_sum -
+					                        BC->d1_moving_avg_history[BC->d1_moving_avg_tick] +
+					                        BC->d1_avg;
+					BC->d1_moving_avg_history[BC->d1_moving_avg_tick] = BC->d1_avg;
+					BC->d1_moving_avg_tick = (BC->d1_moving_avg_tick + 1) % NUM_D1_MOVING_AVERAGE;
+					BC->d1_moving_avg = (BC->d1_moving_avg_sum + NUM_D1_MOVING_AVERAGE / 2) / NUM_D1_MOVING_AVERAGE;
 				}
 
 				ms561101b_write(MS561101BA_D2 | MS561101BA_OSR);
@@ -186,7 +183,6 @@ void tick(uint8_t tick_type) {
 			int32_t air_pressure = (BC->air_pressure_extra * 10) >> EXTRA_PRECISION; // mbar/100 -> mbar/1000
 
 			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = air_pressure;
-			//BC->value[SIMPLE_UNIT_AIR_PRESSURE] = BC->d1_moving_avg;
 
 			// altitude
 			if(BC->auto_calibrate_counter != 0) {
@@ -205,7 +201,7 @@ void tick(uint8_t tick_type) {
 			int32_t altitude;
 			int32_t delta = (BC->air_pressure_extra_ref - BC->air_pressure_extra) * 10; // mbar/100 -> mbar/1000 with extra precision
 
-			if (upper < size - 1) {
+			if(upper < size - 1) {
 				lower = upper + 1;
 
 				int32_t total_delta = altitude_factors[upper].air_pressure - altitude_factors[lower].air_pressure;
@@ -221,7 +217,6 @@ void tick(uint8_t tick_type) {
 			}
 
 			BC->value[SIMPLE_UNIT_ALTITUDE] = altitude / 10; // mm -> cm
-			//BC->value[SIMPLE_UNIT_ALTITUDE] = BC->d2_avg;
 
 			// temperature
 			if(temp < 2000) {
