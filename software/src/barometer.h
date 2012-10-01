@@ -55,8 +55,8 @@
 #define MS561101BA_OSR_COUNTER MS561101BA_OSR_4096_COUNTER
 
 // Calibration values
-#define MS561101BA_PROM_ADDR        0xA2
-#define MS561101BA_PROM_COUNT       6
+#define MS561101BA_PROM_ADDR        0xA0
+#define MS561101BA_PROM_COUNT       8
 #define MS561101BA_PROM_SIZE        2
 
 #define TYPE_GET_AIR_PRESSURE 1
@@ -120,6 +120,7 @@ void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_
 
 uint8_t ms561101b_get_address(void);
 void ms561101b_write(uint8_t command);
+void ms561101b_crc4(uint16_t *prom);
 void ms561101b_read_calibration(void);
 uint32_t ms561101b_read_adc();
 

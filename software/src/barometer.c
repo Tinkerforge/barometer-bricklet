@@ -88,6 +88,7 @@ void constructor(void) {
 
 	simple_constructor();
 
+	BC->calibration_valid = false;
 	BC->counter = 0;
 
 	BC->d1_avg_sum = 0;
@@ -116,14 +117,18 @@ void constructor(void) {
 }
 
 void destructor(void) {
-	simple_destructor();
+	//simple_destructor();
 }
 
 void tick(uint8_t tick_type) {
 	simple_tick(tick_type);
 
 	if(tick_type & TICK_TASK_TYPE_CALCULATION) {
-		if(BC->counter != 0) {
+		if(!BC->calibration_valid) {
+			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = MIN_AIR_PRESSURE;
+			BC->value[SIMPLE_UNIT_ALTITUDE] = 0;
+			BC->temperature = MIN_TEMPERATURE;
+		} else if(BC->counter != 0) {
 			BC->counter--;
 		} else {
 			BC->counter = MS561101BA_OSR_COUNTER;
@@ -242,6 +247,10 @@ void get_chip_temperature_(uint8_t com, GetChipTemperature_ *data) {
 }
 
 void set_reference_air_pressure(uint8_t com, SetReferenceAirPressure *data) {
+	if(!BC->calibration_valid) {
+		return;
+	}
+
 	if(data->air_pressure == 0) {
 		BC->air_pressure_extra_ref = BC->air_pressure_extra;
 	} else {
@@ -295,7 +304,37 @@ void ms561101b_write(uint8_t command) {
 	}
 }
 
+void ms561101b_crc4(uint16_t *prom) {
+	uint16_t reminder = 0;
+	uint16_t backup = prom[7];
+
+	prom[7] = 0xFF00 & prom[7];
+
+	for(uint8_t i = 0; i < 16; i++) {
+		if(i % 2 == 1) {
+			reminder ^= prom[i >> 1] & 0x00FF;
+		} else {
+			reminder ^= prom[i >> 1] >> 8;
+		}
+
+		for(uint8_t k = 8; k > 0; k--) {
+			if(reminder & 0x8000) {
+				reminder = (reminder << 1) ^ 0x3000;
+			} else {
+				reminder = reminder << 1;
+			}
+		}
+	}
+
+	reminder = 0x000F & (reminder >> 12);
+	prom[7] = backup;
+
+	BC->calibration_valid = (reminder == (prom[7] & 0x000F));
+}
+
 void ms561101b_read_calibration(void) {
+	uint16_t prom[MS561101BA_PROM_COUNT];
+
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		uint8_t bytes[2];
 
@@ -304,13 +343,19 @@ void ms561101b_read_calibration(void) {
 		for(uint8_t i = 0; i < MS561101BA_PROM_COUNT; i++) {
 			BA->TWID_Read(BA->twid, ms561101b_get_address(),
 			              MS561101BA_PROM_ADDR + (i * MS561101BA_PROM_SIZE),
-			              1, bytes, 3, NULL);
-			BC->calibration[i] = (bytes[0] << 8) | bytes[1];
+			              1, bytes, MS561101BA_PROM_SIZE, NULL);
+			prom[i] = (bytes[0] << 8) | bytes[1];
 		}
 
 		BA->bricklet_deselect(BS->port - 'a');
 		BA->mutex_give(*BA->mutex_twi_bricklet);
 	}
+
+	for(uint8_t i = 0; i < 6; i++) {
+		BC->calibration[i] = prom[i + 1];
+	}
+
+	ms561101b_crc4(prom);
 }
 
 uint32_t ms561101b_read_adc() {

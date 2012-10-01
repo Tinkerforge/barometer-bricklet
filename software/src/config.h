@@ -76,6 +76,7 @@ typedef struct {
 	uint32_t tick;
 
 	uint16_t calibration[6];
+	bool calibration_valid;
 	uint8_t counter;
 	uint8_t pending_d;
 
