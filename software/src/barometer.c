@@ -71,8 +71,12 @@ void invocation(uint8_t com, uint8_t *data) {
 			get_chip_temperature_(com, (GetChipTemperature_*)data);
 			return;
 
-		case TYPE_CALIBRATE_ALTITUDE:
-			calibrate_altitude(com, (CalibrateAltitude*)data);
+		case TYPE_SET_REFERENCE_AIR_PRESSURE:
+			set_reference_air_pressure(com, (SetReferenceAirPressure*)data);
+			return;
+
+		case TYPE_GET_REFERENCE_AIR_PRESSURE:
+			get_reference_air_pressure(com, (GetReferenceAirPressure*)data);
 			return;
 	}
 
@@ -100,7 +104,6 @@ void constructor(void) {
 
 	BC->air_pressure_extra = 0;
 	BC->air_pressure_extra_ref = REFERENCE_AIR_PRESSURE << EXTRA_PRECISION;
-	BC->auto_calibrate_counter = 15000 / MS561101BA_OSR_COUNTER;
 
 	BC->temperature = 0;
 
@@ -113,7 +116,7 @@ void constructor(void) {
 }
 
 void destructor(void) {
-	//simple_destructor();
+	simple_destructor();
 }
 
 void tick(uint8_t tick_type) {
@@ -165,6 +168,7 @@ void tick(uint8_t tick_type) {
 
 			// air_pressure
 			if(temp < 2000) {
+				// second order compensation
 				int32_t k = 5 * (temp - 2000) * (temp - 2000);
 
 				off -= k >> 1;
@@ -182,14 +186,9 @@ void tick(uint8_t tick_type) {
 
 			int32_t air_pressure = (BC->air_pressure_extra * 10) >> EXTRA_PRECISION; // mbar/100 -> mbar/1000
 
-			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = air_pressure;
+			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = BETWEEN(MIN_AIR_PRESSURE, air_pressure, MAX_AIR_PRESSURE);
 
 			// altitude
-			if(BC->auto_calibrate_counter != 0) {
-				BC->auto_calibrate_counter--;
-				BC->air_pressure_extra_ref = BC->air_pressure_extra;
-			}
-
 			uint8_t size = sizeof(altitude_factors) / sizeof(altitude_factors[0]);
 			uint8_t upper = size - 1;
 			uint8_t lower;
@@ -219,29 +218,46 @@ void tick(uint8_t tick_type) {
 			BC->value[SIMPLE_UNIT_ALTITUDE] = altitude / 10; // mm -> cm
 
 			// temperature
+			int32_t temperature = temp;
+
 			if(temp < 2000) {
-				BC->temperature = temp - (((int64_t)dt * (int64_t)dt) >> 31);
-			} else {
-				BC->temperature = temp;
+				// second order compensation
+				temperature -= ((int64_t)dt * (int64_t)dt) >> 31;
 			}
+
+			BC->temperature = BETWEEN(MIN_TEMPERATURE, temperature, MAX_TEMPERATURE);
 		}
 	}
 }
 
 void get_chip_temperature_(uint8_t com, GetChipTemperature_ *data) {
-	GetChipTemperatureReturn_ gtr;
+	GetChipTemperatureReturn_ gctr;
 
-	gtr.stack_id      = data->stack_id;
-	gtr.type          = data->type;
-	gtr.length        = sizeof(GetChipTemperatureReturn_);
-	gtr.temperature   = BC->temperature;
+	gctr.stack_id      = data->stack_id;
+	gctr.type          = data->type;
+	gctr.length        = sizeof(GetChipTemperatureReturn_);
+	gctr.temperature   = BC->temperature;
 
-	BA->send_blocking_with_timeout(&gtr, sizeof(GetChipTemperatureReturn_), com);
+	BA->send_blocking_with_timeout(&gctr, sizeof(GetChipTemperatureReturn_), com);
 }
 
-void calibrate_altitude(uint8_t com, CalibrateAltitude *data) {
-	BC->air_pressure_extra_ref = BC->air_pressure_extra;
-	BC->auto_calibrate_counter = 0;
+void set_reference_air_pressure(uint8_t com, SetReferenceAirPressure *data) {
+	if(data->air_pressure == 0) {
+		BC->air_pressure_extra_ref = BC->air_pressure_extra;
+	} else {
+		BC->air_pressure_extra_ref = (data->air_pressure << EXTRA_PRECISION) / 10; // add extra precision, mbar/1000 -> mbar/100
+	}
+}
+
+void get_reference_air_pressure(uint8_t com, GetReferenceAirPressure *data) {
+	GetReferenceAirPressureReturn grapr;
+
+	grapr.stack_id      = data->stack_id;
+	grapr.type          = data->type;
+	grapr.length        = sizeof(GetReferenceAirPressureReturn);
+	grapr.air_pressure  = (BC->air_pressure_extra_ref * 10) >> EXTRA_PRECISION; // mbar/100 -> mbar/1000, remove extra precision
+
+	BA->send_blocking_with_timeout(&grapr, sizeof(GetReferenceAirPressureReturn), com);
 }
 
 void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len) {

@@ -71,12 +71,13 @@
 #define TYPE_GET_ALTITUDE_CALLBACK_THRESHOLD 12
 #define TYPE_SET_DEBOUNCE_PERIOD 11
 #define TYPE_GET_DEBOUNCE_PERIOD 12
-#define TYPE_CALIBRATE_ALTITUDE 13
+#define TYPE_SET_REFERENCE_AIR_PRESSURE 13
 #define TYPE_GET_CHIP_TEMPERATURE_ 14
 #define TYPE_AIR_PRESSURE 15
 #define TYPE_ALTITUDE 16
 #define TYPE_AIR_PRESSURE_REACHED 17
 #define TYPE_ALTITUDE_REACHED 18
+#define TYPE_GET_REFERENCE_AIR_PRESSURE 19
 
 typedef struct {
 	uint8_t stack_id;
@@ -95,10 +96,25 @@ typedef struct {
 	uint8_t stack_id;
 	uint8_t type;
 	uint16_t length;
-} __attribute__((__packed__)) CalibrateAltitude;
+	int32_t air_pressure;
+} __attribute__((__packed__)) SetReferenceAirPressure;
+
+typedef struct {
+	uint8_t stack_id;
+	uint8_t type;
+	uint16_t length;
+} __attribute__((__packed__)) GetReferenceAirPressure;
+
+typedef struct {
+	uint8_t stack_id;
+	uint8_t type;
+	uint16_t length;
+	int32_t air_pressure;
+} __attribute__((__packed__)) GetReferenceAirPressureReturn;
 
 void get_chip_temperature_(uint8_t com, GetChipTemperature_ *data);
-void calibrate_altitude(uint8_t com, CalibrateAltitude *data);
+void set_reference_air_pressure(uint8_t com, SetReferenceAirPressure *data);
+void get_reference_air_pressure(uint8_t com, GetReferenceAirPressure *data);
 
 void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len);
 

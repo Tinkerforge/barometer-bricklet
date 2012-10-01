@@ -33,11 +33,11 @@
 
 #define BRICKLET_HARDWARE_NAME "Barometer Bricklet 1.0"
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 1
-#define BRICKLET_FIRMWARE_VERSION_MINOR 0
+#define BRICKLET_FIRMWARE_VERSION_MINOR 1
 #define BRICKLET_FIRMWARE_VERSION_REVISION 0
 
 #define LOGGING_LEVEL LOGGING_NONE
-#define DEBUG_BRICKLET 1
+#define DEBUG_BRICKLET 0
 
 #define BRICKLET_HAS_SIMPLE_SENSOR
 #define BRICKLET_VALUE_APPLIED_OUTSIDE
@@ -46,10 +46,15 @@
 
 #define NUM_D1_AVERAGE 10
 #define NUM_D2_AVERAGE 10
-#define NUM_D1_MOVING_AVERAGE 25
+#define NUM_D1_MOVING_AVERAGE 24
 #define EXTRA_PRECISION 5
-#define REFERENCE_AIR_PRESSURE 101325
 #define ALTITUDE_INTERPOLATION_PRECISION 8
+
+#define REFERENCE_AIR_PRESSURE 101325
+#define MIN_AIR_PRESSURE 10000
+#define MAX_AIR_PRESSURE 1200000
+#define MIN_TEMPERATURE (-4000)
+#define MAX_TEMPERATURE 8500
 
 typedef struct {
 	int32_t  value[NUM_SIMPLE_VALUES];
@@ -89,9 +94,8 @@ typedef struct {
 
 	int32_t air_pressure_extra;
 	int32_t air_pressure_extra_ref;
-	uint16_t auto_calibrate_counter;
 
 	int16_t temperature;
-} __attribute__((packed)) BrickContext;
+} /*__attribute__((packed))*/ BrickContext;
 
 #endif
