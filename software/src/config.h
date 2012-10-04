@@ -46,11 +46,10 @@
 
 #define NUM_D1_AVERAGE 10
 #define NUM_D2_AVERAGE 10
-#define NUM_D1_MOVING_AVERAGE 24
-#define EXTRA_PRECISION 5
+#define NUM_D1_MOVING_AVERAGE 25
 #define ALTITUDE_INTERPOLATION_PRECISION 8
 
-#define REFERENCE_AIR_PRESSURE 101325
+#define REFERENCE_AIR_PRESSURE 1013250
 #define MIN_AIR_PRESSURE 10000
 #define MAX_AIR_PRESSURE 1200000
 #define MIN_TEMPERATURE (-4000)
@@ -93,10 +92,9 @@ typedef struct {
 	uint8_t d2_avg_tick;
 	uint32_t d2_avg;
 
-	int32_t air_pressure_extra;
-	int32_t air_pressure_extra_ref;
+	int32_t air_pressure_ref; // mbar/1000
 
-	int16_t temperature;
+	int16_t temperature; // °C/100
 } /*__attribute__((packed))*/ BrickContext;
 
 #endif

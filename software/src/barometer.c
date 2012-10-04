@@ -58,7 +58,7 @@ const AltitudeFactor altitude_factors[] = {
 	{1225005, 14},
 	{1118311, 13},
 	{1012049, 12},
-	{ 919654, 11},
+	{ 909702, 11},
 	{ 808871, 10},
 	{ 710051,  9},
 	{ 614001,  8},
@@ -103,8 +103,7 @@ void constructor(void) {
 	BC->d2_avg_tick = 0;
 	BC->d2_avg = 0;
 
-	BC->air_pressure_extra = 0;
-	BC->air_pressure_extra_ref = REFERENCE_AIR_PRESSURE << EXTRA_PRECISION;
+	BC->air_pressure_ref = REFERENCE_AIR_PRESSURE;
 
 	BC->temperature = 0;
 
@@ -187,11 +186,10 @@ void tick(uint8_t tick_type) {
 				}
 			}
 
-			BC->air_pressure_extra = ((((int64_t)BC->d1_moving_avg * sens) >> 21) - off) >> (15 - EXTRA_PRECISION);
+			int32_t air_pressure = (((((int64_t)BC->d1_moving_avg * sens) >> 21) - off) * 10) >> 15; // mbar/1000
 
-			int32_t air_pressure = (BC->air_pressure_extra * 10) >> EXTRA_PRECISION; // mbar/100 -> mbar/1000
-
-			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = BETWEEN(MIN_AIR_PRESSURE, air_pressure, MAX_AIR_PRESSURE);
+			air_pressure = BETWEEN(MIN_AIR_PRESSURE, air_pressure, MAX_AIR_PRESSURE);
+			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = air_pressure;
 
 			// altitude
 			uint8_t size = sizeof(altitude_factors) / sizeof(altitude_factors[0]);
@@ -203,7 +201,7 @@ void tick(uint8_t tick_type) {
 			}
 
 			int32_t altitude;
-			int32_t delta = (BC->air_pressure_extra_ref - BC->air_pressure_extra) * 10; // mbar/100 -> mbar/1000 with extra precision
+			int32_t delta = BC->air_pressure_ref - air_pressure;
 
 			if(upper < size - 1) {
 				lower = upper + 1;
@@ -214,10 +212,10 @@ void tick(uint8_t tick_type) {
 				int32_t factor = ((altitude_factors[upper].factor << ALTITUDE_INTERPOLATION_PRECISION) * lower_delta +
 				                  (altitude_factors[lower].factor << ALTITUDE_INTERPOLATION_PRECISION) * upper_delta) / total_delta;
 
-				altitude = (delta * factor) >> (ALTITUDE_INTERPOLATION_PRECISION + EXTRA_PRECISION);
+				altitude = ((int64_t)delta * (int64_t)factor) >> ALTITUDE_INTERPOLATION_PRECISION;
 			} else {
 				lower = upper;
-				altitude = (delta * altitude_factors[upper].factor) >> EXTRA_PRECISION;
+				altitude = delta * altitude_factors[upper].factor;
 			}
 
 			BC->value[SIMPLE_UNIT_ALTITUDE] = altitude / 10; // mm -> cm
@@ -252,9 +250,9 @@ void set_reference_air_pressure(uint8_t com, SetReferenceAirPressure *data) {
 	}
 
 	if(data->air_pressure == 0) {
-		BC->air_pressure_extra_ref = BC->air_pressure_extra;
+		BC->air_pressure_ref = BC->value[SIMPLE_UNIT_AIR_PRESSURE];
 	} else {
-		BC->air_pressure_extra_ref = (data->air_pressure << EXTRA_PRECISION) / 10; // add extra precision, mbar/1000 -> mbar/100
+		BC->air_pressure_ref = BETWEEN(MIN_AIR_PRESSURE, data->air_pressure, MAX_AIR_PRESSURE);
 	}
 }
 
@@ -264,7 +262,7 @@ void get_reference_air_pressure(uint8_t com, GetReferenceAirPressure *data) {
 	grapr.stack_id      = data->stack_id;
 	grapr.type          = data->type;
 	grapr.length        = sizeof(GetReferenceAirPressureReturn);
-	grapr.air_pressure  = (BC->air_pressure_extra_ref * 10) >> EXTRA_PRECISION; // mbar/100 -> mbar/1000, remove extra precision
+	grapr.air_pressure  = BC->air_pressure_ref;
 
 	BA->send_blocking_with_timeout(&grapr, sizeof(GetReferenceAirPressureReturn), com);
 }
