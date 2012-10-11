@@ -2,3 +2,4 @@
 1.1.0: Replace calibate function with getter/setter for reference air pressure
        Check CRC4 of PROM data
 1.1.1: Fix overflow in altitude calculation
+1.1.2: Fix sensor readout timings, avoids reading wrong sensor values

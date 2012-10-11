@@ -112,11 +112,11 @@ void constructor(void) {
 	ms561101b_read_calibration();
 	ms561101b_write(MS561101BA_D1 | MS561101BA_OSR);
 
-	BC->pending_d = 1;
+	BC->pending_d = MS561101BA_D1;
 }
 
 void destructor(void) {
-	//simple_destructor();
+	simple_destructor();
 }
 
 void tick(uint8_t tick_type) {
@@ -130,11 +130,13 @@ void tick(uint8_t tick_type) {
 		} else if(BC->counter != 0) {
 			BC->counter--;
 		} else {
-			BC->counter = MS561101BA_OSR_COUNTER;
+			uint32_t dx;
 
-			uint32_t dx = ms561101b_read_adc();
+			if(BC->pending_d > 0 && !ms561101b_read_adc(&dx)) {
+				return;
+			}
 
-			if(BC->pending_d == 1) {
+			if(BC->pending_d == MS561101BA_D1) {
 				update_avg(dx, &BC->d1_avg_sum, &BC->d1_avg, &BC->d1_avg_tick, NUM_D1_AVERAGE);
 
 				if(BC->d1_moving_avg_tick == 255) {
@@ -156,79 +158,18 @@ void tick(uint8_t tick_type) {
 					BC->d1_moving_avg = (BC->d1_moving_avg_sum + NUM_D1_MOVING_AVERAGE / 2) / NUM_D1_MOVING_AVERAGE;
 				}
 
-				ms561101b_write(MS561101BA_D2 | MS561101BA_OSR);
-				BC->pending_d = 2;
-			} else {
+				BC->pending_d = -MS561101BA_D2;
+			} else if(BC->pending_d == MS561101BA_D2) {
 				update_avg(dx, &BC->d2_avg_sum, &BC->d2_avg, &BC->d2_avg_tick, NUM_D2_AVERAGE);
+				calculate();
 
-				ms561101b_write(MS561101BA_D1 | MS561101BA_OSR);
-				BC->pending_d = 1;
+				BC->pending_d = -MS561101BA_D1;
 			}
 
-			int32_t dt = (int32_t)BC->d2_avg - ((int32_t)BC->calibration[4] << 8);
-			int32_t temp = 2000 + (((int64_t)dt * (int64_t)BC->calibration[5]) >> 23);
-			int64_t off = ((int64_t)BC->calibration[1] << 16) + (((int64_t)BC->calibration[3] * (int64_t)dt) >> 7);
-			int64_t sens = ((int64_t)BC->calibration[0] << 15) + (((int64_t)BC->calibration[2] * (int64_t)dt) >> 8);
-
-			// air_pressure
-			if(temp < 2000) {
-				// second order compensation
-				int32_t k = 5 * (temp - 2000) * (temp - 2000);
-
-				off -= k >> 1;
-				sens -= k >> 2;
-
-				if(temp < -1500) {
-					int32_t n = (temp + 1500) * (temp + 1500);
-
-					off -= 7 * n;
-					sens -= (11 * n) >> 1;
-				}
+			if(ms561101b_write((uint16_t)(-BC->pending_d) | MS561101BA_OSR)) {
+				BC->pending_d = -BC->pending_d;
+				BC->counter = MS561101BA_OSR_COUNTER;
 			}
-
-			int32_t air_pressure = (((((int64_t)BC->d1_moving_avg * sens) >> 21) - off) * 10) >> 15; // mbar/1000
-
-			air_pressure = BETWEEN(MIN_AIR_PRESSURE, air_pressure, MAX_AIR_PRESSURE);
-			BC->value[SIMPLE_UNIT_AIR_PRESSURE] = air_pressure;
-
-			// altitude
-			uint8_t size = sizeof(altitude_factors) / sizeof(altitude_factors[0]);
-			uint8_t upper = size - 1;
-			uint8_t lower;
-
-			while(upper > 0 && air_pressure > altitude_factors[upper].air_pressure) {
-				upper--;
-			}
-
-			int32_t altitude;
-			int32_t delta = BC->air_pressure_ref - air_pressure;
-
-			if(upper < size - 1) {
-				lower = upper + 1;
-
-				int32_t total_delta = altitude_factors[upper].air_pressure - altitude_factors[lower].air_pressure;
-				int32_t upper_delta = altitude_factors[upper].air_pressure - air_pressure;
-				int32_t lower_delta = air_pressure - altitude_factors[lower].air_pressure;
-				int32_t factor = ((altitude_factors[upper].factor << ALTITUDE_INTERPOLATION_PRECISION) * lower_delta +
-				                  (altitude_factors[lower].factor << ALTITUDE_INTERPOLATION_PRECISION) * upper_delta) / total_delta;
-
-				altitude = ((int64_t)delta * (int64_t)factor) >> ALTITUDE_INTERPOLATION_PRECISION;
-			} else {
-				lower = upper;
-				altitude = delta * altitude_factors[upper].factor;
-			}
-
-			BC->value[SIMPLE_UNIT_ALTITUDE] = altitude / 10; // mm -> cm
-
-			// temperature
-			int32_t temperature = temp;
-
-			if(temp < 2000) {
-				// second order compensation
-				temperature -= ((int64_t)dt * (int64_t)dt) >> 31;
-			}
-
-			BC->temperature = BETWEEN(MIN_TEMPERATURE, temperature, MAX_TEMPERATURE);
 		}
 	}
 }
@@ -267,6 +208,73 @@ void get_reference_air_pressure(uint8_t com, GetReferenceAirPressure *data) {
 	BA->send_blocking_with_timeout(&grapr, sizeof(GetReferenceAirPressureReturn), com);
 }
 
+void calculate(void) {
+	int32_t dt = (int32_t)BC->d2_avg - ((int32_t)BC->calibration[4] << 8);
+	int32_t temp = 2000 + (((int64_t)dt * (int64_t)BC->calibration[5]) >> 23);
+	int64_t off = ((int64_t)BC->calibration[1] << 16) + (((int64_t)BC->calibration[3] * (int64_t)dt) >> 7);
+	int64_t sens = ((int64_t)BC->calibration[0] << 15) + (((int64_t)BC->calibration[2] * (int64_t)dt) >> 8);
+
+	// air_pressure
+	if(temp < 2000) {
+		// second order compensation
+		int32_t k = 5 * (temp - 2000) * (temp - 2000);
+
+		off -= k >> 1;
+		sens -= k >> 2;
+
+		if(temp < -1500) {
+			int32_t n = (temp + 1500) * (temp + 1500);
+
+			off -= 7 * n;
+			sens -= (11 * n) >> 1;
+		}
+	}
+
+	int32_t air_pressure = (((((int64_t)BC->d1_moving_avg * sens) >> 21) - off) * 10) >> 15; // mbar/1000
+
+	air_pressure = BETWEEN(MIN_AIR_PRESSURE, air_pressure, MAX_AIR_PRESSURE);
+	BC->value[SIMPLE_UNIT_AIR_PRESSURE] = air_pressure; // FIXME
+
+	// altitude
+	uint8_t size = sizeof(altitude_factors) / sizeof(altitude_factors[0]);
+	uint8_t upper = size - 1;
+	uint8_t lower;
+
+	while(upper > 0 && air_pressure > altitude_factors[upper].air_pressure) {
+		upper--;
+	}
+
+	int32_t altitude;
+	int32_t delta = BC->air_pressure_ref - air_pressure;
+
+	if(upper < size - 1) {
+		lower = upper + 1;
+
+		int32_t total_delta = altitude_factors[upper].air_pressure - altitude_factors[lower].air_pressure;
+		int32_t upper_delta = altitude_factors[upper].air_pressure - air_pressure;
+		int32_t lower_delta = air_pressure - altitude_factors[lower].air_pressure;
+		int32_t factor = ((altitude_factors[upper].factor << ALTITUDE_INTERPOLATION_PRECISION) * lower_delta +
+		                  (altitude_factors[lower].factor << ALTITUDE_INTERPOLATION_PRECISION) * upper_delta) / total_delta;
+
+		altitude = ((int64_t)delta * (int64_t)factor) >> ALTITUDE_INTERPOLATION_PRECISION;
+	} else {
+		lower = upper;
+		altitude = delta * altitude_factors[upper].factor;
+	}
+
+	BC->value[SIMPLE_UNIT_ALTITUDE] = altitude / 10; // mm -> cm
+
+	// temperature
+	int32_t temperature = temp;
+
+	if(temp < 2000) {
+		// second order compensation
+		temperature -= ((int64_t)dt * (int64_t)dt) >> 31;
+	}
+
+	BC->temperature = BETWEEN(MIN_TEMPERATURE, temperature, MAX_TEMPERATURE);
+}
+
 void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len) {
 	*sum += dx;
 	*tick = (*tick + 1) % avg_len;
@@ -285,7 +293,7 @@ uint8_t ms561101b_get_address(void) {
 	}
 }
 
-void ms561101b_write(uint8_t command) {
+bool ms561101b_write(uint8_t command) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		BA->bricklet_select(BS->port - 'a');
 		Twi* twi = BA->twid->pTwi;
@@ -299,7 +307,11 @@ void ms561101b_write(uint8_t command) {
 
 		BA->bricklet_deselect(BS->port - 'a');
 		BA->mutex_give(*BA->mutex_twi_bricklet);
+
+		return true;
 	}
+
+	return false;
 }
 
 void ms561101b_crc4(uint16_t *prom) {
@@ -356,9 +368,7 @@ void ms561101b_read_calibration(void) {
 	ms561101b_crc4(prom);
 }
 
-uint32_t ms561101b_read_adc() {
-	uint32_t value = 0;
-
+bool ms561101b_read_adc(uint32_t *value) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		uint8_t bytes[3];
 
@@ -366,11 +376,13 @@ uint32_t ms561101b_read_adc() {
 		BA->TWID_Read(BA->twid, ms561101b_get_address(), MS561101BA_ADC_READ,
 		              1, bytes, 3, NULL);
 
-		value = (bytes[0] << 16) | (bytes[1] << 8) | bytes[2];
+		*value = (bytes[0] << 16) | (bytes[1] << 8) | bytes[2];
 
 		BA->bricklet_deselect(BS->port - 'a');
 		BA->mutex_give(*BA->mutex_twi_bricklet);
+
+		return true;
 	}
 
-	return value;
+	return false;
 }

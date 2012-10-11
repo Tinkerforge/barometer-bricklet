@@ -46,11 +46,12 @@
 
 #define MS561101BA_OSR MS561101BA_OSR_4096
 
-#define MS561101BA_OSR_256_COUNTER  0
-#define MS561101BA_OSR_512_COUNTER  1
-#define MS561101BA_OSR_1024_COUNTER 2
-#define MS561101BA_OSR_2048_COUNTER 4
-#define MS561101BA_OSR_4096_COUNTER 9
+// Add 2 extra ticks to compensate for the lost tick handling of the Bricks
+#define MS561101BA_OSR_256_COUNTER  (1 + 2)
+#define MS561101BA_OSR_512_COUNTER  (2 + 2)
+#define MS561101BA_OSR_1024_COUNTER (3 + 2)
+#define MS561101BA_OSR_2048_COUNTER (5 + 2)
+#define MS561101BA_OSR_4096_COUNTER (10 + 2)
 
 #define MS561101BA_OSR_COUNTER MS561101BA_OSR_4096_COUNTER
 
@@ -116,13 +117,14 @@ void get_chip_temperature_(uint8_t com, GetChipTemperature_ *data);
 void set_reference_air_pressure(uint8_t com, SetReferenceAirPressure *data);
 void get_reference_air_pressure(uint8_t com, GetReferenceAirPressure *data);
 
+void calculate(void);
 void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len);
 
 uint8_t ms561101b_get_address(void);
-void ms561101b_write(uint8_t command);
+bool ms561101b_write(uint8_t command);
 void ms561101b_crc4(uint16_t *prom);
 void ms561101b_read_calibration(void);
-uint32_t ms561101b_read_adc();
+bool ms561101b_read_adc(uint32_t *value);
 
 void invocation(uint8_t com, uint8_t *data);
 void constructor(void);

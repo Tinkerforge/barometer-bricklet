@@ -34,7 +34,7 @@
 #define BRICKLET_HARDWARE_NAME "Barometer Bricklet 1.0"
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 1
 #define BRICKLET_FIRMWARE_VERSION_MINOR 1
-#define BRICKLET_FIRMWARE_VERSION_REVISION 1
+#define BRICKLET_FIRMWARE_VERSION_REVISION 2
 
 #define LOGGING_LEVEL LOGGING_NONE
 #define DEBUG_BRICKLET 0
@@ -77,7 +77,7 @@ typedef struct {
 	uint16_t calibration[6];
 	bool calibration_valid;
 	uint8_t counter;
-	uint8_t pending_d;
+	int8_t pending_d;
 
 	uint32_t d1_avg_sum;
 	uint8_t d1_avg_tick;
