@@ -45,9 +45,11 @@ const SimpleMessageProperty smp[] = {
 };
 
 const SimpleUnitProperty sup[] = {
-	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_AIR_PRESSURE, TYPE_AIR_PRESSURE_REACHED, SIMPLE_UNIT_AIR_PRESSURE}, // air pressure
-	{NULL, SIMPLE_SIGNEDNESS_INT, TYPE_ALTITUDE,     TYPE_ALTITUDE_REACHED,     SIMPLE_UNIT_ALTITUDE}, // altitude
+	{NULL, SIMPLE_SIGNEDNESS_INT, FID_AIR_PRESSURE, FID_AIR_PRESSURE_REACHED, SIMPLE_UNIT_AIR_PRESSURE}, // air pressure
+	{NULL, SIMPLE_SIGNEDNESS_INT, FID_ALTITUDE,     FID_ALTITUDE_REACHED,     SIMPLE_UNIT_ALTITUDE}, // altitude
 };
+
+const uint8_t smp_length = sizeof(smp);
 
 typedef struct {
 	int32_t air_pressure; // mbar/1000
@@ -65,22 +67,33 @@ const AltitudeFactor altitude_factors[] = {
 	{ 520296,  7}
 };
 
-void invocation(uint8_t com, uint8_t *data) {
-	switch(((SimpleStandardMessage*)data)->type) {
-		case TYPE_GET_CHIP_TEMPERATURE_:
+void invocation(const ComType com, const uint8_t *data) {
+	switch(((SimpleStandardMessage*)data)->header.fid) {
+		case FID_GET_CHIP_TEMPERATURE_: {
 			get_chip_temperature_(com, (GetChipTemperature_*)data);
 			return;
+		}
 
-		case TYPE_SET_REFERENCE_AIR_PRESSURE:
+		case FID_SET_REFERENCE_AIR_PRESSURE: {
 			set_reference_air_pressure(com, (SetReferenceAirPressure*)data);
 			return;
+		}
 
-		case TYPE_GET_REFERENCE_AIR_PRESSURE:
+		case FID_GET_REFERENCE_AIR_PRESSURE: {
 			get_reference_air_pressure(com, (GetReferenceAirPressure*)data);
 			return;
+		}
+
+		default: {
+			simple_invocation(com, data);
+			break;
+		}
 	}
 
-	simple_invocation(com, data);
+
+	if(((SimpleStandardMessage*)data)->header.fid > FID_LAST) {
+		BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_NOT_SUPPORTED, com);
+	}
 }
 
 void constructor(void) {
@@ -119,7 +132,7 @@ void destructor(void) {
 	simple_destructor();
 }
 
-void tick(uint8_t tick_type) {
+void tick(const uint8_t tick_type) {
 	simple_tick(tick_type);
 
 	if(tick_type & TICK_TASK_TYPE_CALCULATION) {
@@ -174,35 +187,33 @@ void tick(uint8_t tick_type) {
 	}
 }
 
-void get_chip_temperature_(uint8_t com, GetChipTemperature_ *data) {
+void get_chip_temperature_(const ComType com, const GetChipTemperature_ *data) {
 	GetChipTemperatureReturn_ gctr;
 
-	gctr.stack_id      = data->stack_id;
-	gctr.type          = data->type;
-	gctr.length        = sizeof(GetChipTemperatureReturn_);
+	gctr.header        = data->header;
+	gctr.header.length = sizeof(GetChipTemperatureReturn_);
 	gctr.temperature   = BC->temperature;
 
 	BA->send_blocking_with_timeout(&gctr, sizeof(GetChipTemperatureReturn_), com);
 }
 
-void set_reference_air_pressure(uint8_t com, SetReferenceAirPressure *data) {
-	if(!BC->calibration_valid) {
-		return;
+void set_reference_air_pressure(const ComType com, const SetReferenceAirPressure *data) {
+	if(BC->calibration_valid) {
+		if(data->air_pressure == 0) {
+			BC->air_pressure_ref = BC->value[SIMPLE_UNIT_AIR_PRESSURE];
+		} else {
+			BC->air_pressure_ref = BETWEEN(MIN_AIR_PRESSURE, data->air_pressure, MAX_AIR_PRESSURE);
+		}
 	}
 
-	if(data->air_pressure == 0) {
-		BC->air_pressure_ref = BC->value[SIMPLE_UNIT_AIR_PRESSURE];
-	} else {
-		BC->air_pressure_ref = BETWEEN(MIN_AIR_PRESSURE, data->air_pressure, MAX_AIR_PRESSURE);
-	}
+	BA->com_return_setter(com, data);
 }
 
-void get_reference_air_pressure(uint8_t com, GetReferenceAirPressure *data) {
+void get_reference_air_pressure(const ComType com, const GetReferenceAirPressure *data) {
 	GetReferenceAirPressureReturn grapr;
 
-	grapr.stack_id      = data->stack_id;
-	grapr.type          = data->type;
-	grapr.length        = sizeof(GetReferenceAirPressureReturn);
+	grapr.header        = data->header;
+	grapr.header.length = sizeof(GetReferenceAirPressureReturn);
 	grapr.air_pressure  = BC->air_pressure_ref;
 
 	BA->send_blocking_with_timeout(&grapr, sizeof(GetReferenceAirPressureReturn), com);
@@ -275,7 +286,7 @@ void calculate(void) {
 	BC->temperature = BETWEEN(MIN_TEMPERATURE, temperature, MAX_TEMPERATURE);
 }
 
-void update_avg(uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, uint8_t avg_len) {
+void update_avg(const uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, const uint8_t avg_len) {
 	*sum += dx;
 	*tick = (*tick + 1) % avg_len;
 
@@ -293,7 +304,7 @@ uint8_t ms561101b_get_address(void) {
 	}
 }
 
-bool ms561101b_write(uint8_t command) {
+bool ms561101b_write(const uint8_t command) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		BA->bricklet_select(BS->port - 'a');
 		Twi* twi = BA->twid->pTwi;
