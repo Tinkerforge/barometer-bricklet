@@ -9,11 +9,11 @@ from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_barometer import Barometer
 
 if __name__ == "__main__":
-    ipcon = IPConnection(HOST, PORT) # Create IP connection to brickd
+    ipcon = IPConnection() # Create IP connection
+    b = Barometer(UID, ipcon) # Create device object
 
-    b = Barometer(UID) # Create device object
-    ipcon.add_device(b) # Add device to IP connection
-    # Don't use device before it is added to a connection
+    ipcon.connect(HOST, PORT) # Connect to brickd
+    # Don't use device before ipcon is connected
 
     # Get current air pressure (unit is mbar/1000)
     air_pressure = b.get_air_pressure()/1000.0
@@ -26,4 +26,3 @@ if __name__ == "__main__":
     print('Altitude: ' + str(altitude) + ' m')
 
     raw_input('Press key to exit\n') # Use input() in Python 3
-    ipcon.destroy()

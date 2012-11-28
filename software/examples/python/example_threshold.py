@@ -14,11 +14,11 @@ def cb_reached(air_pressure):
     print('Enjoy the potentially good weather!')
 
 if __name__ == "__main__":
-    ipcon = IPConnection(HOST, PORT) # Create IP connection to brickd
+    ipcon = IPConnection() # Create IP connection
+    b = Barometer(UID, ipcon) # Create device object
 
-    b = Barometer(UID) # Create device object
-    ipcon.add_device(b) # Add device to IP connection
-    # Don't use device before it is added to a connection
+    ipcon.connect(HOST, PORT) # Connect to brickd
+    # Don't use device before ipcon is connected
 
     # Get threshold callbacks with a debounce time of 10 seconds (10000ms)
     b.set_debounce_period(10000)
@@ -30,4 +30,3 @@ if __name__ == "__main__":
     b.set_air_pressure_callback_threshold('>', 1025*1000, 0)
 
     raw_input('Press key to exit\n') # Use input() in Python 3
-    ipcon.destroy()

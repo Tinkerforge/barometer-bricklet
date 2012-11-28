@@ -17,11 +17,11 @@ def cb_altitude(altitude):
     print('Altitude: ' + str(altitude/100.0) + ' m')
 
 if __name__ == "__main__":
-    ipcon = IPConnection(HOST, PORT) # Create IP connection to brickd
+    ipcon = IPConnection() # Create IP connection
+    b = Barometer(UID, ipcon) # Create device object
 
-    b = Barometer(UID) # Create device object
-    ipcon.add_device(b) # Add device to IP connection
-    # Don't use device before it is added to a connection
+    ipcon.connect(HOST, PORT) # Connect to brickd
+    # Don't use device before ipcon is connected
 
     # Set Period for air pressure and altitude callbacks to 1s (1000ms)
     # Note: The air pressure and altitude callbacks are only called every second
@@ -36,4 +36,3 @@ if __name__ == "__main__":
     b.register_callback(b.CALLBACK_ALTITUDE, cb_altitude)
 
     raw_input('Press key to exit\n') # Use input() in Python 3
-    ipcon.destroy()
