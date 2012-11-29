@@ -10,10 +10,11 @@ HOST = 'localhost'
 PORT = 4223
 UID = 'bAc' # Change to your UID
 
-ipcon = IPConnection.new HOST, PORT # Create IP connection to brickd
-b = BrickletBarometer.new UID # Create device object
-ipcon.add_device b # Add device to IP connection
-# Don't use device before it is added to a connection
+ipcon = IPConnection.new # Create IP connection
+b = BrickletBarometer.new UID, ipcon # Create device object
+
+ipcon.connect HOST, PORT # Connect to brickd
+# Don't use device before ipcon is connected
 
 # Get current air pressure (unit is mbar/1000)
 air_pressure = b.get_air_pressure / 1000.0
@@ -25,4 +26,3 @@ puts "Altitude: #{altitude} m"
 
 puts 'Press key to exit'
 $stdin.gets
-ipcon.destroy

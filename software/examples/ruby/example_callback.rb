@@ -10,10 +10,11 @@ HOST = 'localhost'
 PORT = 4223
 UID = 'bAc' # Change to your UID
 
-ipcon = IPConnection.new HOST, PORT # Create IP connection to brickd
-b = BrickletBarometer.new UID # Create device object
-ipcon.add_device b # Add device to IP connection
-# Don't use device before it is added to a connection
+ipcon = IPConnection.new # Create IP connection
+b = BrickletBarometer.new UID, ipcon # Create device object
+
+ipcon.connect HOST, PORT # Connect to brickd
+# Don't use device before ipcon is connected
 
 # Set Period for air pressure and altitude callbacks to 1s (1000ms)
 # Note: The air pressure and altitude callbacks are only called every second
@@ -33,4 +34,3 @@ end
 
 puts 'Press key to exit'
 $stdin.gets
-ipcon.destroy
