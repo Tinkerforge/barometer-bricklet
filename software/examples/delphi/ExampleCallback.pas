@@ -12,8 +12,8 @@ type
     ipcon: TIPConnection;
     b: TBrickletBarometer;
   public
-    procedure AirPressureCB(const airPressure: longint);
-    procedure AltitudeCB(const altitude: longint);
+    procedure AirPressureCB(sender: TObject; const airPressure: longint);
+    procedure AltitudeCB(sender: TObject; const altitude: longint);
     procedure Execute;
   end;
 
@@ -26,28 +26,28 @@ var
   e: TExample;
 
 { Callback function for air pressure callback (parameter has unit mbar/1000) }
-procedure TExample.AirPressureCB(const airPressure: longint);
+procedure TExample.AirPressureCB(sender: TObject; const airPressure: longint);
 begin
   WriteLn(Format('AirPressure: %f mbar', [airPressure/1000.0]));
 end;
 
 { Callback function for altitude callback (parameter has unit cm) }
-procedure TExample.AltitudeCB(const altitude: longint);
+procedure TExample.AltitudeCB(sender: TObject; const altitude: longint);
 begin
   WriteLn(Format('Altitude: %f m', [altitude/100.0]));
 end;
 
 procedure TExample.Execute;
 begin
-  { Create IP connection to brickd }
-  ipcon := TIPConnection.Create(HOST, PORT);
+  { Create IP connection }
+  ipcon := TIPConnection.Create();
 
   { Create device object }
-  b := TBrickletBarometer.Create(UID);
+  b := TBrickletBarometer.Create(UID, ipcon);
 
-  { Add device to IP connection }
-  ipcon.AddDevice(b);
-  { Don't use device before it is added to a connection }
+  { Connect to brickd }
+  ipcon.Connect(HOST, PORT);
+  { Don't use device before ipcon is connected }
 
   { Set Period for air pressure and altitude callbacks to 1s (1000ms)
     Note: The air pressure and altitude callbacks are only called every second
@@ -63,7 +63,6 @@ begin
 
   WriteLn('Press key to exit');
   ReadLn;
-  ipcon.Destroy;
 end;
 
 begin

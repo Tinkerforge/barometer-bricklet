@@ -12,7 +12,7 @@ type
     ipcon: TIPConnection;
     b: TBrickletBarometer;
   public
-    procedure ReachedCB(const airPressure: longint);
+    procedure ReachedCB(sender: TObject; const airPressure: longint);
     procedure Execute;
   end;
 
@@ -25,7 +25,7 @@ var
   e: TExample;
 
 { Callback for air pressure greater than 1025 mbar }
-procedure TExample.ReachedCB(const airPressure: longint);
+procedure TExample.ReachedCB(sender: TObject; const airPressure: longint);
 begin
   WriteLn(Format('We have %f mbar.', [airPressure/1000.0]));
   WriteLn('Enjoy the potentially good weather!');
@@ -33,15 +33,15 @@ end;
 
 procedure TExample.Execute;
 begin
-  { Create IP connection to brickd }
-  ipcon := TIPConnection.Create(HOST, PORT);
+  { Create IP connection }
+  ipcon := TIPConnection.Create();
 
   { Create device object }
-  b := TBrickletBarometer.Create(UID);
+  b := TBrickletBarometer.Create(UID, ipcon);
 
-  { Add device to IP connection }
-  ipcon.AddDevice(b);
-  { Don't use device before it is added to a connection }
+  { Connect to brickd }
+  ipcon.Connect(HOST, PORT);
+  { Don't use device before ipcon is connected }
 
   { Get threshold callbacks with a debounce time of 10 seconds (10000ms) }
   b.SetDebouncePeriod(10000);
@@ -54,7 +54,6 @@ begin
 
   WriteLn('Press key to exit');
   ReadLn;
-  ipcon.Destroy;
 end;
 
 begin
