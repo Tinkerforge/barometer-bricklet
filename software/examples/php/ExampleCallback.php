@@ -22,11 +22,11 @@ function cb_altitude($altitude)
     echo "Altitude: " . $altitude / 100.0 . " m\n";
 }
 
-$ipcon = new IPConnection($host, $port); // Create IP connection to brickd
-$b = new BrickletBarometer($uid); // Create device object
+$ipcon = new IPConnection(); // Create IP connection
+$b = new BrickletBarometer($uid, $ipcon); // Create device object
 
-$ipcon->addDevice($b); // Add device to IP connection
-// Don't use device before it is added to a connection
+$ipcon->connect($host, $port); // Connect to brickd
+// Don't use device before ipcon is connected
 
 // Set Period for air pressure and altitude callbacks to 1s (1000ms)
 // Note: The air pressure and altitude callbacks are only called every second
