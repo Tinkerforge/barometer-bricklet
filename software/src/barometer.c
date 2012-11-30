@@ -90,7 +90,6 @@ void invocation(const ComType com, const uint8_t *data) {
 		}
 	}
 
-
 	if(((SimpleStandardMessage*)data)->header.fid > FID_LAST) {
 		BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_NOT_SUPPORTED, com);
 	}
