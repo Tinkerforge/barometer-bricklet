@@ -8,10 +8,11 @@ class Example
 
 	static void Main()
 	{
-		IPConnection ipcon = new IPConnection(HOST, PORT); // Create connection to brickd
-		BrickletBarometer b = new BrickletBarometer(UID); // Create device object
-		ipcon.AddDevice(b); // Add device to IP connection
-		// Don't use device before it is added to a connection
+		IPConnection ipcon = new IPConnection(); // Create IP connection
+		BrickletBarometer b = new BrickletBarometer(UID, ipcon); // Create device object
+
+		ipcon.Connect(HOST, PORT); // Connect to brickd
+		// Don't use device before ipcon is connected
 
 		// Get current air pressure (unit is mbar/1000)
 		int airPressure = b.GetAirPressure();
@@ -24,6 +25,5 @@ class Example
 
 		System.Console.WriteLine("Press key to exit");
 		System.Console.ReadKey();
-		ipcon.Destroy();
 	}
 }
