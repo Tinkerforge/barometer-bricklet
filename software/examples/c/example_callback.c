@@ -10,11 +10,15 @@
 
 // Callback function for air pressure callback (parameter has unit mbar/1000)
 void cb_air_pressure(int32_t air_pressure, void *user_data) {
+	(void)user_data; // avoid unused parameter warning
+
 	printf("Air Pressure: %f mbar\n", air_pressure/1000.0);
 }
 
 // Callback function for altitude callback (parameter has unit cm)
 void cb_altitude(int32_t altitude, void *user_data) {
+	(void)user_data; // avoid unused parameter warning
+
 	printf("Altitude: %f m\n", altitude/100.0);
 }
 
@@ -44,13 +48,13 @@ int main() {
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE,
 	                            cb_air_pressure,
-								NULL);
+	                            NULL);
 
 	// Register altitude callback to function cb_altitude
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_ALTITUDE,
 	                            cb_altitude,
-								NULL);
+	                            NULL);
 
 	printf("Press key to exit\n");
 	getchar();

@@ -10,28 +10,27 @@
 
 // Callback for air pressure greater than 1025 mbar
 void cb_reached(int32_t air_pressure, void *user_data) {
+	(void)user_data; // avoid unused parameter warning
+
 	printf("We have %f mbar.\n", air_pressure/1000.0);
 	printf("Enjoy the potentially good weather!\n");
 }
 
 int main() {
-	// Create IP connection to brickd
+	// Create IP connection
 	IPConnection ipcon;
-	if(ipcon_create(&ipcon, HOST, PORT) < 0) {
-		fprintf(stderr, "Could not create connection\n");
-		exit(1);
-	}
+	ipcon_create(&ipcon);
 
 	// Create device object
 	Barometer b;
-	barometer_create(&b, UID);
+	barometer_create(&b, UID, &ipcon);
 
-	// Add device to IP connection
-	if(ipcon_add_device(&ipcon, &b) < 0) {
-		fprintf(stderr, "Could not connect to Bricklet\n");
+	// Connect to brickd
+	if(ipcon_connect(&ipcon, HOST, PORT) < 0) {
+		fprintf(stderr, "Could not connect\n");
 		exit(1);
 	}
-	// Don't use device before it is added to a connection
+	// Don't use device before ipcon is connected
 
 	// Get threshold callbacks with a debounce time of 10 seconds (10000ms)
 	barometer_set_debounce_period(&b, 10000);
@@ -40,7 +39,7 @@ int main() {
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE_REACHED,
 	                            cb_reached,
-								NULL);
+	                            NULL);
 
 	// Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
 	barometer_set_air_pressure_callback_threshold(&b, '>', 1025*1000, 0);
