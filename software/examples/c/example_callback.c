@@ -47,13 +47,13 @@ int main() {
 	// Register air pressure callback to function cb_air_pressure
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE,
-	                            cb_air_pressure,
+	                            (void *)cb_air_pressure,
 	                            NULL);
 
 	// Register altitude callback to function cb_altitude
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_ALTITUDE,
-	                            cb_altitude,
+	                            (void *)cb_altitude,
 	                            NULL);
 
 	printf("Press key to exit\n");

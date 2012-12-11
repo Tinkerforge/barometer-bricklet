@@ -38,7 +38,7 @@ int main() {
 	// Register threshold reached callback to function cb_reached
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE_REACHED,
-	                            cb_reached,
+	                            (void *)cb_reached,
 	                            NULL);
 
 	// Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
