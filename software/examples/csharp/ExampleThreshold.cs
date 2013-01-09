@@ -7,7 +7,7 @@ class Example
 	private static string UID = "bAc"; // Change to your UID
 
 	// Callback for air pressure greater than 1025 mbar
-	static void ReachedCB(object sender, int airPressure)
+	static void ReachedCB(BrickletBarometer sender, int airPressure)
 	{
 		System.Console.WriteLine("We have " + airPressure/1000.0 + " mbar.");
 		System.Console.WriteLine("Enjoy the potentially good weather!");

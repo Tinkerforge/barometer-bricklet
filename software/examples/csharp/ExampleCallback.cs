@@ -7,13 +7,13 @@ class Example
 	private static string UID = "bAc"; // Change to your UID
 
 	// Callback function for air pressure callback (parameter has unit mbar/1000)
-	static void AirPressureCB(object sender, int airPressure)
+	static void AirPressureCB(BrickletBarometer sender, int airPressure)
 	{
 		System.Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
 	}
 
 	// Callback function for altitude callback (parameter has unit cm)
-	static void AltitudeCB(object sender, int altitude)
+	static void AltitudeCB(BrickletBarometer sender, int altitude)
 	{
 		System.Console.WriteLine("Altitude: " + altitude/100.0 + " m");
 	}

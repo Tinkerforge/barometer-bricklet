@@ -12,7 +12,7 @@ type
     ipcon: TIPConnection;
     b: TBrickletBarometer;
   public
-    procedure ReachedCB(sender: TObject; const airPressure: longint);
+    procedure ReachedCB(sender: TBrickletBarometer; const airPressure: longint);
     procedure Execute;
   end;
 
@@ -25,7 +25,7 @@ var
   e: TExample;
 
 { Callback for air pressure greater than 1025 mbar }
-procedure TExample.ReachedCB(sender: TObject; const airPressure: longint);
+procedure TExample.ReachedCB(sender: TBrickletBarometer; const airPressure: longint);
 begin
   WriteLn(Format('We have %f mbar.', [airPressure/1000.0]));
   WriteLn('Enjoy the potentially good weather!');

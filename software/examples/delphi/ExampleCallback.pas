@@ -12,8 +12,8 @@ type
     ipcon: TIPConnection;
     b: TBrickletBarometer;
   public
-    procedure AirPressureCB(sender: TObject; const airPressure: longint);
-    procedure AltitudeCB(sender: TObject; const altitude: longint);
+    procedure AirPressureCB(sender: TBrickletBarometer; const airPressure: longint);
+    procedure AltitudeCB(sender: TBrickletBarometer; const altitude: longint);
     procedure Execute;
   end;
 
@@ -26,13 +26,13 @@ var
   e: TExample;
 
 { Callback function for air pressure callback (parameter has unit mbar/1000) }
-procedure TExample.AirPressureCB(sender: TObject; const airPressure: longint);
+procedure TExample.AirPressureCB(sender: TBrickletBarometer; const airPressure: longint);
 begin
   WriteLn(Format('AirPressure: %f mbar', [airPressure/1000.0]));
 end;
 
 { Callback function for altitude callback (parameter has unit cm) }
-procedure TExample.AltitudeCB(sender: TObject; const altitude: longint);
+procedure TExample.AltitudeCB(sender: TBrickletBarometer; const altitude: longint);
 begin
   WriteLn(Format('Altitude: %f m', [altitude/100.0]));
 end;
