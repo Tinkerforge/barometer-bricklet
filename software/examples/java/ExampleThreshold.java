@@ -23,7 +23,7 @@ public class ExampleThreshold {
 
 		// Add and implement air pressure reached listener
 		// (called if air pressure is greater than 1025 mbar)
-		b.addListener(new BrickletBarometer.AirPressureReachedListener() {
+		b.addAirPressureReachedListener(new BrickletBarometer.AirPressureReachedListener() {
 			public void airPressureReached(int airPressure) {
 				System.out.println("We have: " + airPressure/1000.0 + " mbar.");
 				System.out.println("Enjoy the potentially good weather!");

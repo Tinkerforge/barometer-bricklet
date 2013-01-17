@@ -22,14 +22,14 @@ public class ExampleCallback {
 		b.setAltitudeCallbackPeriod(1000);
 
 		// Add and implement air pressure listener (called if air pressure changes)
-		b.addListener(new BrickletBarometer.AirPressureListener() {
+		b.addAirPressureListener(new BrickletBarometer.AirPressureListener() {
 			public void airPressure(int airPressure) {
 				System.out.println("Air Pressure: " + airPressure/1000.0 + " mbar");
 			}
 		});
 
 		// Add and implement altitude listener (called if altitude changes)
-		b.addListener(new BrickletBarometer.AltitudeListener() {
+		b.addAltitudeListener(new BrickletBarometer.AltitudeListener() {
 			public void altitude(int altitude) {
 				System.out.println("Altitude: " + altitude/100.0 + " m");
 			}
