@@ -16,12 +16,12 @@ public class ExampleSimple {
 		// Don't use device before ipcon is connected
 
 		// Get current air pressure (unit is mbar/1000)
-		int airPressure = b.getAirPressure(); // Can throw IPConnection.TimeoutException
+		int airPressure = b.getAirPressure(); // Can throw com.tinkerforge.TimeoutException
 
 		System.out.println("Air Pressure: " + airPressure/1000.0 + " Lux");
 
 		// Get current altitude (unit is cm)
-		int altitude = b.getAltitude(); // Can throw IPConnection.TimeoutException
+		int altitude = b.getAltitude(); // Can throw com.tinkerforge.TimeoutException
 
 		System.out.println("Altitude: " + altitude/100.0 + " m");
 
