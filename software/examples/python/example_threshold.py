@@ -30,3 +30,4 @@ if __name__ == "__main__":
     b.set_air_pressure_callback_threshold('>', 1025*1000, 0)
 
     raw_input('Press key to exit\n') # Use input() in Python 3
+    ipcon.disconnect()

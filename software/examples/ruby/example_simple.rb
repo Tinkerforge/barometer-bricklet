@@ -26,3 +26,4 @@ puts "Altitude: #{altitude} m"
 
 puts 'Press key to exit'
 $stdin.gets
+ipcon.disconnect
