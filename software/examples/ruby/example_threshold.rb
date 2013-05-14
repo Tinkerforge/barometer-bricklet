@@ -30,3 +30,4 @@ b.set_air_pressure_callback_threshold '>', 1025*1000, 0
 
 puts 'Press key to exit'
 $stdin.gets
+ipcon.disconnect

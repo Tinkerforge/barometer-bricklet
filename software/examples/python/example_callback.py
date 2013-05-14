@@ -36,3 +36,4 @@ if __name__ == "__main__":
     b.register_callback(b.CALLBACK_ALTITUDE, cb_altitude)
 
     raw_input('Press key to exit\n') # Use input() in Python 3
+    ipcon.disconnect()
