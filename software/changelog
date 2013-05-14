@@ -4,3 +4,4 @@
 1.1.1: Fix overflow in altitude calculation
 1.1.2: Fix sensor readout timings, avoids reading wrong sensor values
 2.0.0: Support for protocol 2.0
+2.0.1: Add API for configuration of averaging parameters

@@ -1,5 +1,5 @@
 /* barometer-bricklet
- * Copyright (C) 2012 Olaf Lüke <olaf@tinkerforge.com>
+ * Copyright (C) 2012-2013 Olaf Lüke <olaf@tinkerforge.com>
  *
  * barometer.h: Implementation of Barometer Bricklet messages
  *
@@ -81,6 +81,8 @@
 #define FID_AIR_PRESSURE_REACHED 17
 #define FID_ALTITUDE_REACHED 18
 #define FID_GET_REFERENCE_AIR_PRESSURE 19
+#define FID_SET_AVERAGING 20
+#define FID_GET_AVERAGING 21
 
 #define FID_LAST 19
 
@@ -107,9 +109,29 @@ typedef struct {
 	int32_t air_pressure;
 } __attribute__((__packed__)) GetReferenceAirPressureReturn;
 
+typedef struct {
+	MessageHeader header;
+	uint8_t moving_average_pressure;
+	uint8_t average_pressure;
+	uint8_t average_temperature;
+} __attribute__((__packed__)) SetAveraging;
+
+typedef struct {
+	MessageHeader header;
+} __attribute__((__packed__)) GetAveraging;
+
+typedef struct {
+	MessageHeader header;
+	uint8_t moving_average_pressure;
+	uint8_t average_pressure;
+	uint8_t average_temperature;
+} __attribute__((__packed__)) GetAveragingReturn;
+
 void get_chip_temperature_(const ComType com, const GetChipTemperature_ *data);
 void set_reference_air_pressure(const ComType com, const SetReferenceAirPressure *data);
 void get_reference_air_pressure(const ComType com, const GetReferenceAirPressure *data);
+void set_averaging(const ComType com, const SetAveraging *data);
+void get_averaging(const ComType com, const GetAveraging *data);
 
 void calculate(void);
 void update_avg(const uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, const uint8_t avg_len);

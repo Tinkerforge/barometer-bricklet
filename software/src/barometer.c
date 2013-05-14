@@ -1,5 +1,5 @@
 /* barometer-bricklet
- * Copyright (C) 2012 Olaf Lüke <olaf@tinkerforge.com>
+ * Copyright (C) 2012-2013 Olaf Lüke <olaf@tinkerforge.com>
  *
  * barometer.c: Implementation of Barometer Bricklet messages
  *
@@ -84,6 +84,16 @@ void invocation(const ComType com, const uint8_t *data) {
 			return;
 		}
 
+		case FID_SET_AVERAGING: {
+			set_averaging(com, (SetAveraging*)data);
+			return;
+		}
+
+		case FID_GET_AVERAGING: {
+			get_averaging(com, (GetAveraging*)data);
+			return;
+		}
+
 		default: {
 			simple_invocation(com, data);
 			break;
@@ -114,6 +124,10 @@ void constructor(void) {
 	BC->d2_avg_sum = 0;
 	BC->d2_avg_tick = 0;
 	BC->d2_avg = 0;
+
+	BC->num_moving_average = NUM_D1_MOVING_AVERAGE_DEFAULT;
+	BC->num_average_d1     = NUM_D1_AVERAGE_DEFAULT;
+	BC->num_average_d2     = NUM_D2_AVERAGE_DEFAULT;
 
 	BC->air_pressure_ref = REFERENCE_AIR_PRESSURE;
 
@@ -149,30 +163,34 @@ void tick(const uint8_t tick_type) {
 			}
 
 			if(BC->pending_d == MS561101BA_D1) {
-				update_avg(dx, &BC->d1_avg_sum, &BC->d1_avg, &BC->d1_avg_tick, NUM_D1_AVERAGE);
+				update_avg(dx, &BC->d1_avg_sum, &BC->d1_avg, &BC->d1_avg_tick, BC->num_average_d1);
 
-				if(BC->d1_moving_avg_tick == 255) {
-					for(uint8_t i = 0; i < NUM_D1_MOVING_AVERAGE; i++) {
-						BC->d1_moving_avg_history[i] = dx;
+				if(BC->num_moving_average == 0) {
+					BC->d1_moving_avg = BC->d1_avg;
+				} else {
+					if(BC->d1_moving_avg_tick == 255) {
+						for(uint8_t i = 0; i < BC->num_moving_average; i++) {
+							BC->d1_moving_avg_history[i] = dx;
+						}
+
+						BC->d1_moving_avg_sum = dx * BC->num_moving_average;
+						BC->d1_moving_avg_tick = 0;
+						BC->d1_moving_avg = dx;
 					}
 
-					BC->d1_moving_avg_sum = dx * NUM_D1_MOVING_AVERAGE;
-					BC->d1_moving_avg_tick = 0;
-					BC->d1_moving_avg = dx;
-				}
-
-				if(BC->d1_avg_tick == 0) {
-					BC->d1_moving_avg_sum = BC->d1_moving_avg_sum -
-					                        BC->d1_moving_avg_history[BC->d1_moving_avg_tick] +
-					                        BC->d1_avg;
-					BC->d1_moving_avg_history[BC->d1_moving_avg_tick] = BC->d1_avg;
-					BC->d1_moving_avg_tick = (BC->d1_moving_avg_tick + 1) % NUM_D1_MOVING_AVERAGE;
-					BC->d1_moving_avg = (BC->d1_moving_avg_sum + NUM_D1_MOVING_AVERAGE / 2) / NUM_D1_MOVING_AVERAGE;
+					if(BC->d1_avg_tick == 0) {
+						BC->d1_moving_avg_sum = BC->d1_moving_avg_sum -
+												BC->d1_moving_avg_history[BC->d1_moving_avg_tick] +
+												BC->d1_avg;
+						BC->d1_moving_avg_history[BC->d1_moving_avg_tick] = BC->d1_avg;
+						BC->d1_moving_avg_tick = (BC->d1_moving_avg_tick + 1) % BC->num_moving_average;
+						BC->d1_moving_avg = (BC->d1_moving_avg_sum + BC->num_moving_average / 2) / BC->num_moving_average;
+					}
 				}
 
 				BC->pending_d = -MS561101BA_D2;
 			} else if(BC->pending_d == MS561101BA_D2) {
-				update_avg(dx, &BC->d2_avg_sum, &BC->d2_avg, &BC->d2_avg_tick, NUM_D2_AVERAGE);
+				update_avg(dx, &BC->d2_avg_sum, &BC->d2_avg, &BC->d2_avg_tick, BC->num_average_d2);
 				calculate();
 
 				BC->pending_d = -MS561101BA_D1;
@@ -216,6 +234,40 @@ void get_reference_air_pressure(const ComType com, const GetReferenceAirPressure
 	grapr.air_pressure  = BC->air_pressure_ref;
 
 	BA->send_blocking_with_timeout(&grapr, sizeof(GetReferenceAirPressureReturn), com);
+}
+
+void set_averaging(const ComType com, const SetAveraging *data) {
+	if(BC->num_moving_average != data->moving_average_pressure) {
+		BC->d1_moving_avg_tick = 255;
+	}
+
+	if(BC->num_average_d1 != data->average_pressure) {
+		BC->d1_avg_sum = 0;
+		BC->d1_avg_tick = 0;
+	}
+
+	if(BC->num_average_d2 != data->average_temperature) {
+		BC->d2_avg_sum = 0;
+		BC->d2_avg_tick = 0;
+	}
+
+	BC->num_moving_average = MIN(NUM_D1_MOVING_AVERAGE_MAX, data->moving_average_pressure);
+	BC->num_average_d1 = MIN(NUM_D1_AVERAGE_MAX, data->average_pressure);
+	BC->num_average_d2 = MIN(NUM_D2_AVERAGE_MAX, data->average_temperature);
+
+	BA->com_return_setter(com, data);
+}
+
+void get_averaging(const ComType com, const GetAveraging *data) {
+	GetAveragingReturn gar;
+
+	gar.header                  = data->header;
+	gar.header.length           = sizeof(GetAveragingReturn);
+	gar.moving_average_pressure = BC->num_moving_average;
+	gar.average_pressure        = BC->num_average_d1;
+	gar.average_temperature     = BC->num_average_d2;
+
+	BA->send_blocking_with_timeout(&gar, sizeof(GetAveragingReturn), com);
 }
 
 void calculate(void) {
@@ -286,6 +338,12 @@ void calculate(void) {
 }
 
 void update_avg(const uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, const uint8_t avg_len) {
+	if(avg_len == 0) {
+		*tick = 0;
+		*avg = dx;
+		return;
+	}
+
 	*sum += dx;
 	*tick = (*tick + 1) % avg_len;
 

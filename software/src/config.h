@@ -1,5 +1,5 @@
 /* barometer-bricklet
- * Copyright (C) 2012 Olaf Lüke <olaf@tinkerforge.com>
+ * Copyright (C) 2012-2013 Olaf Lüke <olaf@tinkerforge.com>
  *
  * config.h: Barometer Bricklet specific configuration
  *
@@ -33,7 +33,7 @@
 
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 2
 #define BRICKLET_FIRMWARE_VERSION_MINOR 0
-#define BRICKLET_FIRMWARE_VERSION_REVISION 0
+#define BRICKLET_FIRMWARE_VERSION_REVISION 1
 
 #define BRICKLET_HARDWARE_VERSION_MAJOR 1
 #define BRICKLET_HARDWARE_VERSION_MINOR 0
@@ -49,9 +49,14 @@
 #define INVOCATION_IN_BRICKLET_CODE
 #define NUM_SIMPLE_VALUES 2
 
-#define NUM_D1_AVERAGE 10
-#define NUM_D2_AVERAGE 10
-#define NUM_D1_MOVING_AVERAGE 25
+#define NUM_D1_AVERAGE_MAX 10
+#define NUM_D2_AVERAGE_MAX 255
+#define NUM_D1_MOVING_AVERAGE_MAX 25
+
+#define NUM_D1_AVERAGE_DEFAULT 10
+#define NUM_D2_AVERAGE_DEFAULT 10
+#define NUM_D1_MOVING_AVERAGE_DEFAULT 25
+
 #define ALTITUDE_INTERPOLATION_PRECISION 8
 
 #define REFERENCE_AIR_PRESSURE 1013250
@@ -88,7 +93,7 @@ typedef struct {
 	uint8_t d1_avg_tick;
 	uint32_t d1_avg;
 
-	uint32_t d1_moving_avg_history[NUM_D1_MOVING_AVERAGE];
+	uint32_t d1_moving_avg_history[NUM_D1_MOVING_AVERAGE_MAX];
 	uint32_t d1_moving_avg_sum;
 	uint8_t d1_moving_avg_tick;
 	uint32_t d1_moving_avg;
@@ -100,6 +105,9 @@ typedef struct {
 	int32_t air_pressure_ref; // mbar/1000
 
 	int16_t temperature; // °C/100
+	uint8_t num_moving_average;
+	uint8_t num_average_d1;
+	uint8_t num_average_d2;
 } /*__attribute__((packed))*/ BrickContext;
 
 #endif
