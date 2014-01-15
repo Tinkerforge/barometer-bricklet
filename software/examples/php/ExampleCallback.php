@@ -6,9 +6,9 @@ require_once('Tinkerforge/BrickletBarometer.php');
 use Tinkerforge\IPConnection;
 use Tinkerforge\BrickletBarometer;
 
-$host = 'localhost';
-$port = 4223;
-$uid = 'bAc'; // Change to your UID
+const HOST = 'localhost';
+const PORT = 4223;
+const UID = 'bAc'; // Change to your UID
 
 // Callback function for air pressure callback (parameter has unit mbar/1000)
 function cb_airPressure($airPressure)
@@ -23,9 +23,9 @@ function cb_altitude($altitude)
 }
 
 $ipcon = new IPConnection(); // Create IP connection
-$b = new BrickletBarometer($uid, $ipcon); // Create device object
+$b = new BrickletBarometer(UID, $ipcon); // Create device object
 
-$ipcon->connect($host, $port); // Connect to brickd
+$ipcon->connect(HOST, PORT); // Connect to brickd
 // Don't use device before ipcon is connected
 
 // Set Period for air pressure and altitude callbacks to 1s (1000ms)
