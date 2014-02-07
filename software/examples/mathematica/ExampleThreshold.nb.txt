@@ -1,0 +1,34 @@
+Needs["NETLink`"]
+LoadNETAssembly["Tinkerforge",NotebookDirectory[]<>"../../.."]
+
+host="localhost"
+port=4223
+uid="jmQ"(* Change to your UID *)
+
+(* Create IPConnection and device object *)
+ipcon=NETNew["Tinkerforge.IPConnection"]
+b=NETNew["Tinkerforge.BrickletBarometer",uid,ipcon]
+ipcon@Connect[host,port]
+
+(* Get threshold callbacks with a debounce time of 10 seconds (10000ms) *)
+b@SetDebouncePeriod[10000]
+
+(* Callback for air pressure greater than 1025 mbar *)
+AirPressureReachedCB[sender_,airPressure_]:=
+ Module[{},
+  Print["We have "<>ToString[N[Quantity[airPressure,"mbar/1000"]]]<>"."];
+  Print["Enjoy the potentially good weather!"]
+ ]
+
+AddEventHandler[b@AirPressureReached,AirPressureReachedCB]
+
+(* Configure threshold for "greater than 1025 mbar" (unit is mbar/1000) *)
+option=Tinkerforge`BrickletBarometer`THRESHOLDUOPTIONUGREATER
+b@SetAirPressureCallbackThreshold[option,1025*1000,0]
+
+Input["Click OK to exit"]
+
+(* Clean up *)
+ipcon@Disconnect[]
+ReleaseNETObject[b]
+ReleaseNETObject[ipcon]
