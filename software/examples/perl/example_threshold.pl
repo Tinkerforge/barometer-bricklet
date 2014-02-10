@@ -7,8 +7,8 @@ use constant HOST => 'localhost';
 use constant PORT => 4223;
 use constant UID => 'jod'; # Change to your UID
 
-my $ipcon = IPConnection->new(); # Create IP connection
-my $b = BrickletBarometer->new(&UID, $ipcon); # Create device object
+my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection
+my $b = Tinkerforge::BrickletBarometer->new(&UID, $ipcon); # Create device object
 
 # Callback for air pressure greater than 1025 mbar
 sub cb_reached
