@@ -1,12 +1,11 @@
-var IPConnection = require('Tinkerforge/IPConnection');
-var BrickletBarometer = require('Tinkerforge/BrickletBarometer');
+var Tinkerforge = require('tinkerforge');
 
 var HOST = 'localhost';
 var PORT = 4223;
 var UID = 'jmQ';// Change to your UID
 
-var ipcon = new IPConnection();// Create IP connection
-var b = new BrickletBarometer(UID, ipcon);// Create device object
+var ipcon = new Tinkerforge.IPConnection();// Create IP connection
+var b = new Tinkerforge.BrickletBarometer(UID, ipcon);// Create device object
 
 ipcon.connect(HOST, PORT,
     function(error) {
@@ -15,7 +14,7 @@ ipcon.connect(HOST, PORT,
 );// Connect to brickd
 
 // Don't use device before ipcon is connected
-ipcon.on(IPConnection.CALLBACK_CONNECTED,
+ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function(connectReason) {
         // Get threshold callbacks with a debounce time of 10 seconds (10000ms)
         b.setDebouncePeriod(10000);
@@ -25,7 +24,7 @@ ipcon.on(IPConnection.CALLBACK_CONNECTED,
 );
 
 // Register threshold reached callback
-b.on(BrickletBarometer.CALLBACK_AIR_PRESSURE_REACHED,
+b.on(Tinkerforge.BrickletBarometer.CALLBACK_AIR_PRESSURE_REACHED,
     // Callback for air pressure greater than 1025 mbar
     function(ap) {
         console.log('We have '+ap/1000.+' mbar.');

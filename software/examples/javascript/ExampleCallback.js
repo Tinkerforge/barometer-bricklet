@@ -1,12 +1,11 @@
-var IPConnection = require('Tinkerforge/IPConnection');
-var BrickletBarometer = require('Tinkerforge/BrickletBarometer');
+var Tinkerforge = require('tinkerforge');
 
 var HOST = 'localhost';
 var PORT = 4223;
 var UID = 'jmQ';// Change to your UID
 
-var ipcon = new IPConnection();// Create IP connection
-var b = new BrickletBarometer(UID, ipcon);// Create device object
+var ipcon = new Tinkerforge.IPConnection();// Create IP connection
+var b = new Tinkerforge.BrickletBarometer(UID, ipcon);// Create device object
 
 ipcon.connect(HOST, PORT,
     function(error) {
@@ -15,7 +14,7 @@ ipcon.connect(HOST, PORT,
 );// Connect to brickd
 
 // Don't use device before ipcon is connected
-ipcon.on(IPConnection.CALLBACK_CONNECTED,
+ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function(connectReason) {
         // Set Period for air pressure and altitude callbacks to 1s (1000ms)
         // Note: The air pressure and altitude callbacks are only called every second
@@ -26,7 +25,7 @@ ipcon.on(IPConnection.CALLBACK_CONNECTED,
 );
 
 // Register air pressure callback
-b.on(BrickletBarometer.CALLBACK_AIR_PRESSURE,
+b.on(Tinkerforge.BrickletBarometer.CALLBACK_AIR_PRESSURE,
     // Callback function for air pressure callback (parameter has unit mbar/1000)
     function(ap) {
         console.log('Air pressure: '+ap/1000+' mbar');
@@ -35,7 +34,7 @@ b.on(BrickletBarometer.CALLBACK_AIR_PRESSURE,
 );
 
 // Register altitude callback
-b.on(BrickletBarometer.CALLBACK_ALTITUDE,
+b.on(Tinkerforge.BrickletBarometer.CALLBACK_ALTITUDE,
     // Callback function for altitude callback (parameter has unit cm)
     function(alt) {
         console.log('Altitude: '+alt/100+' m');
