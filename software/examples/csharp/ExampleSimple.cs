@@ -17,7 +17,7 @@ class Example
 		// Get current air pressure (unit is mbar/1000)
 		int airPressure = b.GetAirPressure();
 
-		// Get current altitude (unit is mbar/1000)
+		// Get current altitude (unit is cm)
 		int altitude = b.GetAltitude();
 
 		System.Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
