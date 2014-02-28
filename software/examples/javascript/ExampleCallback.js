@@ -2,25 +2,25 @@ var Tinkerforge = require('tinkerforge');
 
 var HOST = 'localhost';
 var PORT = 4223;
-var UID = 'jmQ';// Change to your UID
+var UID = 'jmQ'; // Change to your UID
 
-var ipcon = new Tinkerforge.IPConnection();// Create IP connection
-var b = new Tinkerforge.BrickletBarometer(UID, ipcon);// Create device object
+var ipcon = new Tinkerforge.IPConnection(); // Create IP connection
+var b = new Tinkerforge.BrickletBarometer(UID, ipcon); // Create device object
 
 ipcon.connect(HOST, PORT,
     function(error) {
-        console.log('Error: '+error);        
+        console.log('Error: '+error);
     }
-);// Connect to brickd
-
+); // Connect to brickd
 // Don't use device before ipcon is connected
+
 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function(connectReason) {
         // Set Period for air pressure and altitude callbacks to 1s (1000ms)
         // Note: The air pressure and altitude callbacks are only called every second
         // if the air pressure or altitude has changed since the last call!
         b.setAirPressureCallbackPeriod(1000);
-        b.setAltitudeCallbackPeriod(1000);   
+        b.setAltitudeCallbackPeriod(1000);
     }
 );
 
@@ -49,4 +49,3 @@ process.stdin.on('data',
         process.exit(0);
     }
 );
-

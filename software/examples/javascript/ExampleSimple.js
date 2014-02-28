@@ -2,18 +2,18 @@ var Tinkerforge = require('tinkerforge');
 
 var HOST = 'localhost';
 var PORT = 4223;
-var UID = 'jmQ';// Change to your UID
+var UID = 'jmQ'; // Change to your UID
 
-var ipcon = new Tinkerforge.IPConnection();// Create IP connection
-var b = new Tinkerforge.BrickletBarometer(UID, ipcon);// Create device object
+var ipcon = new Tinkerforge.IPConnection(); // Create IP connection
+var b = new Tinkerforge.BrickletBarometer(UID, ipcon); // Create device object
 
 ipcon.connect(HOST, PORT,
     function(error) {
-        console.log('Error: '+error);        
+        console.log('Error: '+error);
     }
-);// Connect to brickd
-
+); // Connect to brickd
 // Don't use device before ipcon is connected
+
 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function(connectReason) {
         // Get current air pressure (unit is mbar/1000) and current altitude (unit is cm)
@@ -43,4 +43,3 @@ process.stdin.on('data',
         process.exit(0);
     }
 );
-
