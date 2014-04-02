@@ -14,14 +14,16 @@ my $b = Tinkerforge::BrickletBarometer->new(&UID, $ipcon); # Create device objec
 sub cb_air_pressure
 {
     my ($air_pressure) = @_;
-    print "\nAir Pressure: ".$air_pressure/1000.0." mbar\n";
+
+    print "Air Pressure: ".$air_pressure/1000.0." mbar\n";
 }
 
 # Callback function for altitude callback (parameter has unit cm)
 sub cb_altitude
 {
     my ($altitude) = @_;
-    print "\nAltitude: ".$altitude/100.0." m\n";
+
+    print "Altitude: ".$altitude/100.0." m\n";
 }
 
 $ipcon->connect(&HOST, &PORT); # Connect to brickd
@@ -39,7 +41,7 @@ $b->register_callback($b->CALLBACK_AIR_PRESSURE, 'cb_air_pressure');
 # Register altitude callback to function cb_altitude
 $b->register_callback($b->CALLBACK_ALTITUDE, 'cb_altitude');
 
-print "\nPress any key to exit...\n";
+print "Press any key to exit...\n";
 <STDIN>;
 $ipcon->disconnect();
 
