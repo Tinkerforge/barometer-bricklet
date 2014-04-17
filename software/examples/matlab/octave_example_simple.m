@@ -12,15 +12,13 @@ function octave_example_simple
     % Don't use device before ipcon is connected
     
     % Get current air pressure (unit is mbar/1000)
-    air_pressure = b.getAirPressure()/1000.0;
-
-    fprintf("Air Pressure: %gmbar\n", air_pressure);
+    airPressure = b.getAirPressure();
+    fprintf("Air Pressure: %gmbar\n", airPressure/1000.0);
 
     % Get current altitude (unit is cm)
-    altitude = b.getAltitude()/100.0;
+    altitude = b.getAltitude();
+    fprintf("Altitude: %gm\n", altitude/100.0);
 
-    fprintf("Altitude: %gm\n", altitude);
-
-    input("\nPress any key to exit...\n", "s");
+    input("Press any key to exit...\n", "s");
     ipcon.disconnect();
 end

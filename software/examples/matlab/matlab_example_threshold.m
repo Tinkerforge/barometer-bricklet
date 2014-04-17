@@ -16,17 +16,17 @@ function matlab_example_threshold
     b.setDebouncePeriod(10000);
 
     % Register threshold reached callback to function cb_reached
-    set(b, 'AirPressureReachedCallback', @(h, e)cb_reached(e.airPressure));
+    set(b, 'AirPressureReachedCallback', @(h, e) cb_reached(e));
 
     % Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
     b.setAirPressureCallbackThreshold('>', 1025*1000, 0);
 
-    input('\nPress any key to exit...\n', 's');
+    input('Press any key to exit...\n', 's');
     ipcon.disconnect();
 end
 
 % Callback for air pressure greater than 1025 mbar
-function cb_reached(air_pressure)
-    fprintf('We have %g mbar\n', air_pressure/1000);
+function cb_reached(e)
+    fprintf('We have %g mbar\n', e.airPressure/1000.0);
     fprintf('Enjoy the potentially good weather!\n');
 end

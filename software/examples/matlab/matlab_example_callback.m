@@ -19,21 +19,21 @@ function matlab_example_callback
     b.setAltitudeCallbackPeriod(1000);
 
     % Register air pressure callback to function cb_air_pressure
-    set(b, 'AirPressureCallback', @(h, e)cb_air_pressure(e.airPressure));
+    set(b, 'AirPressureCallback', @(h, e) cb_air_pressure(e));
 
     % Register altitude callback to function cb_altitude
-    set(b, 'AltitudeCallback', @(h, e)cb_altitude(e.altitude));
+    set(b, 'AltitudeCallback', @(h, e) cb_altitude(e));
 
-    input('\nPress any key to exit...\n', 's');
+    input('Press any key to exit...\n', 's');
     ipcon.disconnect();
 end
 
 %Callback function for air pressure callback (parameter has unit mbar/1000)
-function cb_air_pressure(air_pressure)
-    fprintf('Air Pressure: %gmbar\n', air_pressure/1000);
+function cb_air_pressure(e)
+    fprintf('Air Pressure: %gmbar\n', e.airPressure/1000.0);
 end
 
 % Callback function for altitude callback (parameter has unit cm)
-function cb_altitude(altitude)
-    fprintf('Altitude: %gm\n', altitude/100);
+function cb_altitude(e)
+    fprintf('Altitude: %gm\n', e.altitude/100.0);
 end

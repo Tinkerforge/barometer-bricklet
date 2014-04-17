@@ -18,21 +18,21 @@ function octave_example_callback
     b.setAltitudeCallbackPeriod(1000);
 
     % Register air pressure callback to function cb_air_pressure
-    b.addAirPressureListener("cb_air_pressure");
+    b.addAirPressureCallback(@cb_air_pressure);
 
     % Register altitude callback to function cb_altitude
-    b.addAltitudeListener("cb_altitude");
+    b.addAltitudeCallback(@cb_altitude);
 
-    input("\nPress any key to exit...\n", "s");
+    input("Press any key to exit...\n", "s");
     ipcon.disconnect();
 end
 
 % Callback function for air pressure callback (parameter has unit mbar/1000)
-function cb_air_pressure(air_pressure)
-    fprintf("Air Pressure: %g mbar\n", air_pressure/1000);
+function cb_air_pressure(e)
+    fprintf("Air Pressure: %g mbar\n", e.airPressure/1000.0);
 end
 
 % Callback function for altitude callback (parameter has unit cm)
-function cb_altitude(altitude)
-    fprintf("Altitude: %g m\n", altitude/100);
+function cb_altitude(e)
+    fprintf("Altitude: %g m\n", e.altitude/100.0);
 end
