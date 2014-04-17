@@ -26,6 +26,6 @@ end
 
 % Callback for air pressure greater than 1025 mbar
 function cb_reached(e)
-    fprintf('We have %g mbar\n', e.airPressure/1000.0);
+    fprintf("We have %g mbar\n", e.airPressure/1000.0);
     fprintf("Enjoy the potentially good weather!\n");
 end
