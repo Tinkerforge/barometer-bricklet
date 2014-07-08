@@ -84,7 +84,7 @@
 #define FID_SET_AVERAGING 20
 #define FID_GET_AVERAGING 21
 
-#define FID_LAST 19
+#define FID_LAST 21
 
 typedef struct {
 	MessageHeader header;
