@@ -25,7 +25,7 @@ public class ExampleSimple {
 
 		System.out.println("Altitude: " + altitude/100.0 + " m");
 
-		System.console().readLine("Press key to exit\n");
+		System.out.println("Press key to exit"); System.in.read();
 		ipcon.disconnect();
 	}
 }
