@@ -23,8 +23,8 @@ class Example
 		System.Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
 		System.Console.WriteLine("Altitude: " + altitude/100.0 + " m");
 
-		System.Console.WriteLine("Press key to exit");
-		System.Console.ReadKey();
+		System.Console.WriteLine("Press enter to exit");
+		System.Console.ReadLine();
 		ipcon.Disconnect();
 	}
 }

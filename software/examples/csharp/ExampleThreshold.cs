@@ -30,8 +30,8 @@ class Example
 		// Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
 		b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
 
-		System.Console.WriteLine("Press key to exit");
-		System.Console.ReadKey();
+		System.Console.WriteLine("Press enter to exit");
+		System.Console.ReadLine();
 		ipcon.Disconnect();
 	}
 }
