@@ -1,6 +1,6 @@
-update=Mo 30 Apr 2012 12:45:16 CEST
+update=Mo 10 Jun 2013 09:02:53 CEST
 version=1
-last_client=eeschema
+last_client=pcbnew
 [cvpcb]
 version=1
 NetITyp=0
@@ -13,38 +13,6 @@ NetType=0
 EquName1=devcms
 [general]
 version=1
-[pcbnew]
-version=1
-PadDrlX=0
-PadDimH=118
-PadDimV=217
-BoardThickness=630
-TxtPcbV=800
-TxtPcbH=600
-TxtModV=600
-TxtModH=600
-TxtModW=120
-VEgarde=0
-DrawLar=150
-EdgeLar=150
-TxtLar=120
-MSegLar=150
-LastNetListRead=barometric-pressure.net
-[pcbnew/libraries]
-LibDir=kicad-libraries
-LibName1=sockets
-LibName2=connect
-LibName3=discret
-LibName4=pin_array
-LibName5=divers
-LibName6=libcms
-LibName7=display
-LibName8=valves
-LibName9=led
-LibName10=dip_sockets
-LibName11=standard
-LibName12=Logo
-LibName13=tinkerforge
 [eeschema]
 version=1
 LibDir=kicad-libraries
@@ -108,3 +76,37 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=tinkerforge
+[pcbnew]
+version=1
+LastNetListRead=barometric-pressure.net
+UseCmpFile=1
+PadDrill="    0,000000"
+PadDrillOvalY="    0,000000"
+PadSizeH="    0,299720"
+PadSizeV="    0,551180"
+PcbTextSizeV="    2,032000"
+PcbTextSizeH="    1,524000"
+PcbTextThickness="    0,304800"
+ModuleTextSizeV="    1,524000"
+ModuleTextSizeH="    1,524000"
+ModuleTextSizeThickness="    0,304800"
+SolderMaskClearance="    0,000000"
+SolderMaskMinWidth="    0,000000"
+DrawSegmentWidth="    0,381000"
+BoardOutlineThickness="    0,381000"
+ModuleOutlineThickness="    0,381000"
+[pcbnew/libraries]
+LibDir=kicad-libraries
+LibName1=tinkerforge
+LibName2=sockets
+LibName3=connect
+LibName4=discret
+LibName5=pin_array
+LibName6=divers
+LibName7=libcms
+LibName8=display
+LibName9=valves
+LibName10=led
+LibName11=dip_sockets
+LibName12=standard
+LibName13=Logo
