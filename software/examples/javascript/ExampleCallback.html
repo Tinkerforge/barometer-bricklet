@@ -52,8 +52,7 @@
                 b.on(Tinkerforge.BrickletBarometer.CALLBACK_AIR_PRESSURE,
                     // Callback function for air pressure callback (parameter has unit mbar/1000)
                     function(ap) {
-                        textArea.value += 'Air pressure: '+ap/1000+' mbar';
-                        textArea.value += '\n';
+                        textArea.value += 'Air pressure: '+ap/1000+' mbar\n';
                         textArea.scrollTop = textArea.scrollHeight;
                     }
                 );
@@ -61,8 +60,7 @@
                 b.on(Tinkerforge.BrickletBarometer.CALLBACK_ALTITUDE,
                     // Callback function for altitude callback (parameter has unit cm)
                     function(alt) {
-                        textArea.value += 'Altitude: '+alt/100+' m';
-                        textArea.value += '\n';
+                        textArea.value += 'Altitude: '+alt/100+' m\n';
                         textArea.scrollTop = textArea.scrollHeight;
                     }
                 );
