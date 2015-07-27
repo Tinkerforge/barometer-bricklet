@@ -1,10 +1,10 @@
-import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.BrickletBarometer;
 
 public class ExampleThreshold {
 	private static final String HOST = "localhost";
 	private static final int PORT = 4223;
-	private static final String UID = "bAc"; // Change to your UID
+	private static final String UID = "XYZ"; // Change to your UID
 
 	// Note: To make the example code cleaner we do not handle exceptions. Exceptions you
 	//       might normally want to catch are described in the documentation
@@ -21,11 +21,10 @@ public class ExampleThreshold {
 		// Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
 		b.setAirPressureCallbackThreshold('>', 1025*1000, 0);
 
-		// Add and implement air pressure reached listener
-		// (called if air pressure is greater than 1025 mbar)
+		// Add threshold reached listener for air pressure greater than 1025 mbar (parameter has unit mbar/1000)
 		b.addAirPressureReachedListener(new BrickletBarometer.AirPressureReachedListener() {
 			public void airPressureReached(int airPressure) {
-				System.out.println("We have: " + airPressure/1000.0 + " mbar.");
+				System.out.println("Air Pressure: " + airPressure/1000.0 + " mbar");
 				System.out.println("Enjoy the potentially good weather!");
 			}
 		});

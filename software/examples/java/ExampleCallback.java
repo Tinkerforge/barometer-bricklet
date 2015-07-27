@@ -1,10 +1,10 @@
-import com.tinkerforge.BrickletBarometer;
 import com.tinkerforge.IPConnection;
+import com.tinkerforge.BrickletBarometer;
 
 public class ExampleCallback {
 	private static final String HOST = "localhost";
 	private static final int PORT = 4223;
-	private static final String UID = "bAc"; // Change to your UID
+	private static final String UID = "XYZ"; // Change to your UID
 
 	// Note: To make the example code cleaner we do not handle exceptions. Exceptions you
 	//       might normally want to catch are described in the documentation
@@ -15,20 +15,24 @@ public class ExampleCallback {
 		ipcon.connect(HOST, PORT); // Connect to brickd
 		// Don't use device before ipcon is connected
 
-		// Set Period for air pressure and altitude callbacks to 1s (1000ms)
-		// Note: The air pressure and altitude callbacks are only called every second
-		//       if the air pressure or altitude has changed since the last call!
+		// Set period for air pressure callback to 1s (1000ms)
+		// Note: The air pressure callback is only called every second
+		//       if the air pressure has changed since the last call!
 		b.setAirPressureCallbackPeriod(1000);
-		b.setAltitudeCallbackPeriod(1000);
 
-		// Add and implement air pressure listener (called if air pressure changes)
+		// Add air pressure listener (parameter has unit mbar/1000)
 		b.addAirPressureListener(new BrickletBarometer.AirPressureListener() {
 			public void airPressure(int airPressure) {
 				System.out.println("Air Pressure: " + airPressure/1000.0 + " mbar");
 			}
 		});
 
-		// Add and implement altitude listener (called if altitude changes)
+		// Set period for altitude callback to 1s (1000ms)
+		// Note: The altitude callback is only called every second
+		//       if the altitude has changed since the last call!
+		b.setAltitudeCallbackPeriod(1000);
+
+		// Add altitude listener (parameter has unit cm)
 		b.addAltitudeListener(new BrickletBarometer.AltitudeListener() {
 			public void altitude(int altitude) {
 				System.out.println("Altitude: " + altitude/100.0 + " m");

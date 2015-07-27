@@ -8,7 +8,7 @@ include Tinkerforge
 
 HOST = 'localhost'
 PORT = 4223
-UID = 'bAc' # Change to your UID
+UID = 'XYZ' # Change to your UID
 
 ipcon = IPConnection.new # Create IP connection
 b = BrickletBarometer.new UID, ipcon # Create device object
@@ -19,9 +19,9 @@ ipcon.connect HOST, PORT # Connect to brickd
 # Get threshold callbacks with a debounce time of 10 seconds (10000ms)
 b.set_debounce_period 10000
 
-# Register threshold reached callback for air pressure greater than 1025 mbar
+# Register threshold reached callback for air pressure greater than 1025 mbar (parameter has unit mbar/1000)
 b.register_callback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED) do |air_pressure|
-  puts "We have #{air_pressure/1000.0} mbar."
+  puts "Air Pressure: #{air_pressure/1000.0} mbar"
   puts "Enjoy the potentially good weather!"
 end
 

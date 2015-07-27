@@ -3,7 +3,7 @@
 
 HOST = "localhost"
 PORT = 4223
-UID = "bAc" # Change to your UID
+UID = "XYZ" # Change to your UID
 
 from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_barometer import Barometer
@@ -23,14 +23,18 @@ if __name__ == "__main__":
     ipcon.connect(HOST, PORT) # Connect to brickd
     # Don't use device before ipcon is connected
 
-    # Set Period for air pressure and altitude callbacks to 1s (1000ms)
-    # Note: The air pressure and altitude callbacks are only called every second
-    #       if the air pressure or altitude has changed since the last call!
+    # Set period for air pressure callback to 1s (1000ms)
+    # Note: The air pressure callback is only called every second
+    #       if the air pressure has changed since the last call!
     b.set_air_pressure_callback_period(1000)
-    b.set_altitude_callback_period(1000)
 
     # Register air pressure callback to function cb_air_pressure
     b.register_callback(b.CALLBACK_AIR_PRESSURE, cb_air_pressure)
+
+    # Set period for altitude callback to 1s (1000ms)
+    # Note: The altitude callback is only called every second
+    #       if the altitude has changed since the last call!
+    b.set_altitude_callback_period(1000)
 
     # Register altitude callback to function cb_altitude
     b.register_callback(b.CALLBACK_ALTITUDE, cb_altitude)

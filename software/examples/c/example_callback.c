@@ -5,7 +5,7 @@
 
 #define HOST "localhost"
 #define PORT 4223
-#define UID "bAc" // Change to your UID
+#define UID "XYZ" // Change to your UID
 
 // Callback function for air pressure callback (parameter has unit mbar/1000)
 void cb_air_pressure(int32_t air_pressure, void *user_data) {
@@ -28,7 +28,7 @@ int main() {
 
 	// Create device object
 	Barometer b;
-	barometer_create(&b, UID, &ipcon); 
+	barometer_create(&b, UID, &ipcon);
 
 	// Connect to brickd
 	if(ipcon_connect(&ipcon, HOST, PORT) < 0) {
@@ -37,17 +37,21 @@ int main() {
 	}
 	// Don't use device before ipcon is connected
 
-	// Set Period for air pressure and altitude callbacks to 1s (1000ms)
-	// Note: The air pressure and altitude callbacks are only called every second
-	//       if the air pressure or altitude has changed since the last call!
+	// Set period for air pressure callback to 1s (1000ms)
+	// Note: The air pressure callback is only called every second
+	//       if the air pressure has changed since the last call!
 	barometer_set_air_pressure_callback_period(&b, 1000);
-	barometer_set_altitude_callback_period(&b, 1000);
 
 	// Register air pressure callback to function cb_air_pressure
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE,
 	                            (void *)cb_air_pressure,
 	                            NULL);
+
+	// Set period for altitude callback to 1s (1000ms)
+	// Note: The altitude callback is only called every second
+	//       if the altitude has changed since the last call!
+	barometer_set_altitude_callback_period(&b, 1000);
 
 	// Register altitude callback to function cb_altitude
 	barometer_register_callback(&b,
