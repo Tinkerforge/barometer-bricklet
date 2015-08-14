@@ -12,22 +12,22 @@ type
     ipcon: TIPConnection;
     b: TBrickletBarometer;
   public
-    procedure ReachedCB(sender: TBrickletBarometer; const airPressure: longint);
+    procedure AirPressureReachedCB(sender: TBrickletBarometer; const airPressure: longint);
     procedure Execute;
   end;
 
 const
   HOST = 'localhost';
   PORT = 4223;
-  UID = 'bAc'; { Change to your UID }
+  UID = 'XYZ'; { Change to your UID }
 
 var
   e: TExample;
 
-{ Callback for air pressure greater than 1025 mbar }
-procedure TExample.ReachedCB(sender: TBrickletBarometer; const airPressure: longint);
+{ Callback procedure for air pressure greater than 1025 mbar (parameter has unit mbar/1000) }
+procedure TExample.AirPressureReachedCB(sender: TBrickletBarometer; const airPressure: longint);
 begin
-  WriteLn(Format('We have %f mbar.', [airPressure/1000.0]));
+  WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
   WriteLn('Enjoy the potentially good weather!');
 end;
 
@@ -46,8 +46,8 @@ begin
   { Get threshold callbacks with a debounce time of 10 seconds (10000ms) }
   b.SetDebouncePeriod(10000);
 
-  { Register threshold reached callback to procedure ReachedCB }
-  b.OnAirPressureReached := {$ifdef FPC}@{$endif}ReachedCB;
+  { Register threshold reached callback to procedure AirPressureReachedCB }
+  b.OnAirPressureReached := {$ifdef FPC}@{$endif}AirPressureReachedCB;
 
   { Configure threshold for "greater than 1025 mbar" (unit is mbar/1000) }
   b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
