@@ -3,7 +3,7 @@ Imports Tinkerforge
 Module ExampleCallback
     Const HOST As String = "localhost"
     Const PORT As Integer = 4223
-    Const UID As String = "SCB31" ' Change to your UID
+    Const UID As String = "XYZ" ' Change to your UID
 
     ' Callback function for air pressure callback (parameter has unit mbar/1000)
     Sub AirPressureCB(ByVal sender As BrickletBarometer, ByVal airPressure As Integer)
@@ -22,14 +22,18 @@ Module ExampleCallback
         ipcon.Connect(HOST, PORT) ' Connect to brickd
         ' Don't use device before ipcon is connected
 
-        ' Set Period for air pressure and altitude callbacks to 1s (1000ms)
-        ' Note: The air pressure and altitude callbacks are only called every second
-        '       if the air pressure or altitude has changed since the last call!
+        ' Set period for air pressure callback to 1s (1000ms)
+        ' Note: The air pressure callback is only called every second
+        '       if the air pressure has changed since the last call!
         b.SetAirPressureCallbackPeriod(1000)
-        b.SetAltitudeCallbackPeriod(1000)
 
         ' Register air pressure callback to function AirPressureCB
         AddHandler b.AirPressure, AddressOf AirPressureCB
+
+        ' Set period for altitude callback to 1s (1000ms)
+        ' Note: The altitude callback is only called every second
+        '       if the altitude has changed since the last call!
+        b.SetAltitudeCallbackPeriod(1000)
 
         ' Register altitude callback to function AltitudeCB
         AddHandler b.Altitude, AddressOf AltitudeCB
