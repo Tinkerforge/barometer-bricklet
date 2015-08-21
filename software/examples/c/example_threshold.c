@@ -12,7 +12,7 @@ void cb_air_pressure_reached(int32_t air_pressure, void *user_data) {
 	(void)user_data; // avoid unused parameter warning
 
 	printf("Air Pressure: %f mbar\n", air_pressure/1000.0);
-	puts("Enjoy the potentially good weather!");
+	printf("Enjoy the potentially good weather!\n");
 }
 
 int main(void) {
