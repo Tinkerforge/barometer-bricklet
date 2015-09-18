@@ -8,12 +8,12 @@ use Tinkerforge\BrickletBarometer;
 
 const HOST = 'localhost';
 const PORT = 4223;
-const UID = 'bAc'; // Change to your UID
+const UID = 'XYZ'; // Change to your UID
 
-// Callback for air pressure greater than 1025 mbar
-function cb_reached($airPressure)
+// Callback function for air pressure reached callback (parameter has unit mbar/1000)
+function cb_airPressureReached($air_pressure)
 {
-    echo "We have " . $airPressure / 1000.0 . " mbar.\n";
+    echo "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
     echo "Enjoy the potentially good weather!\n";
 }
 
@@ -26,10 +26,10 @@ $ipcon->connect(HOST, PORT); // Connect to brickd
 // Get threshold callbacks with a debounce time of 10 seconds (10000ms)
 $b->setDebouncePeriod(10000);
 
-// Register threshold reached callback to function cb_reached
-$b->registerCallback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED, 'cb_reached');
+// Register air pressure reached callback to function cb_airPressureReached
+$b->registerCallback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED, 'cb_airPressureReached');
 
-// Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
+// Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
 $b->setAirPressureCallbackThreshold('>', 1025*1000, 0);
 
 echo "Press ctrl+c to exit\n";

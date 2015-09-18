@@ -19,13 +19,13 @@ ipcon.connect HOST, PORT # Connect to brickd
 # Get threshold callbacks with a debounce time of 10 seconds (10000ms)
 b.set_debounce_period 10000
 
-# Register threshold reached callback for air pressure greater than 1025 mbar (parameter has unit mbar/1000)
+# Register air pressure reached callback (parameter has unit mbar/1000)
 b.register_callback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED) do |air_pressure|
   puts "Air Pressure: #{air_pressure/1000.0} mbar"
   puts 'Enjoy the potentially good weather!'
 end
 
-# Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
+# Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
 b.set_air_pressure_callback_threshold '>', 1025*1000, 0
 
 puts 'Press key to exit'

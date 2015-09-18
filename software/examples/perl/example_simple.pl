@@ -21,6 +21,6 @@ print "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
 my $altitude = $b->get_altitude();
 print "Altitude: " . $altitude/100.0 . " m\n";
 
-print "Press any key to exit...\n";
+print "Press key to exit\n";
 <STDIN>;
 $ipcon->disconnect();

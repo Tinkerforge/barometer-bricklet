@@ -1,8 +1,10 @@
 #!/bin/sh
-# connects to localhost:4223 by default, use --host and --port to change it
+# Connects to localhost:4223 by default, use --host and --port to change this
 
-# change to your UID
-uid=d99
+uid=XYZ # Change to your UID
 
-# get current air pressure (unit is mbar/1000)
+# Get current air pressure (unit is mbar/1000)
 tinkerforge call barometer-bricklet $uid get-air-pressure
+
+# Get current altitude (unit is cm)
+tinkerforge call barometer-bricklet $uid get-altitude

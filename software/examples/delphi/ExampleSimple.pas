@@ -24,7 +24,7 @@ var
   e: TExample;
 
 procedure TExample.Execute;
-var airPressure: longint; altitude: longint;
+var airPressure, altitude: longint;
 begin
   { Create IP connection }
   ipcon := TIPConnection.Create;

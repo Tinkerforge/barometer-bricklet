@@ -17,11 +17,11 @@ if __name__ == "__main__":
 
     # Get current air pressure (unit is mbar/1000)
     air_pressure = b.get_air_pressure()
-    print('Air Pressure: ' + str(air_pressure/1000.0) + ' mbar')
+    print("Air Pressure: " + str(air_pressure/1000.0) + " mbar")
 
     # Get current altitude (unit is cm)
     altitude = b.get_altitude()
-    print('Altitude: ' + str(altitude/100.0) + ' m')
+    print("Altitude: " + str(altitude/100.0) + " m")
 
-    raw_input('Press key to exit\n') # Use input() in Python 3
+    raw_input("Press key to exit\n") # Use input() in Python 3
     ipcon.disconnect()

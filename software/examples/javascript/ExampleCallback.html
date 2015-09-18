@@ -34,33 +34,25 @@
                 var b = new Tinkerforge.BrickletBarometer(UID, ipcon); // Create device object
                 ipcon.connect(HOST, PORT,
                     function(error) {
-                        textArea.value += 'Error: '+error+ '\n';
+                        textArea.value += 'Error: ' + error + '\n';
                     }
                 ); // Connect to brickd
                 // Don't use device before ipcon is connected
 
                 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
-                    function(connectReason) {
-                        // Set Period for air pressure and altitude callbacks to 1s (1000ms)
-                        // Note: The air pressure and altitude callbacks are only called every second
-                        // if the air pressure or altitude has changed since the last call!
+                    function (connectReason) {
+                        // Set period for air pressure callback to 1s (1000ms)
+                        // Note: The air pressure callback is only called every second
+                        //       if the air pressure has changed since the last call!
                         b.setAirPressureCallbackPeriod(1000);
-                        b.setAltitudeCallbackPeriod(1000);
                     }
                 );
+
                 // Register air pressure callback
                 b.on(Tinkerforge.BrickletBarometer.CALLBACK_AIR_PRESSURE,
                     // Callback function for air pressure callback (parameter has unit mbar/1000)
-                    function(ap) {
-                        textArea.value += 'Air pressure: '+ap/1000+' mbar\n';
-                        textArea.scrollTop = textArea.scrollHeight;
-                    }
-                );
-                // Register altitude callback
-                b.on(Tinkerforge.BrickletBarometer.CALLBACK_ALTITUDE,
-                    // Callback function for altitude callback (parameter has unit cm)
-                    function(alt) {
-                        textArea.value += 'Altitude: '+alt/100+' m\n';
+                    function (airPressure) {
+                        textArea.value += 'Air Pressure: ' + airPressure/1000.0 + ' mbar\n';
                         textArea.scrollTop = textArea.scrollHeight;
                     }
                 );

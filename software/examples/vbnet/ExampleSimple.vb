@@ -1,3 +1,4 @@
+Imports System
 Imports Tinkerforge
 
 Module ExampleSimple
@@ -14,14 +15,14 @@ Module ExampleSimple
 
         ' Get current air pressure (unit is mbar/1000)
         Dim airPressure As Integer = b.GetAirPressure()
-        System.Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " mbar")
+        Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " mbar")
 
         ' Get current altitude (unit is cm)
         Dim altitude As Integer = b.GetAltitude()
-        System.Console.WriteLine("Altitude: " + (altitude/100.0).ToString() + " m")
+        Console.WriteLine("Altitude: " + (altitude/100.0).ToString() + " m")
 
-        System.Console.WriteLine("Press key to exit")
-        System.Console.ReadLine()
+        Console.WriteLine("Press key to exit")
+        Console.ReadLine()
         ipcon.Disconnect()
     End Sub
 End Module

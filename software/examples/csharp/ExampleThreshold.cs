@@ -1,3 +1,4 @@
+using System;
 using Tinkerforge;
 
 class Example
@@ -6,11 +7,11 @@ class Example
 	private static int PORT = 4223;
 	private static string UID = "XYZ"; // Change to your UID
 
-	// Callback function for air pressure greater than 1025 mbar (parameter has unit mbar/1000)
+	// Callback function for air pressure reached callback (parameter has unit mbar/1000)
 	static void AirPressureReachedCB(BrickletBarometer sender, int airPressure)
 	{
-		System.Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
-		System.Console.WriteLine("Enjoy the potentially good weather!");
+		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
+		Console.WriteLine("Enjoy the potentially good weather!");
 	}
 
 	static void Main()
@@ -24,14 +25,14 @@ class Example
 		// Get threshold callbacks with a debounce time of 10 seconds (10000ms)
 		b.SetDebouncePeriod(10000);
 
-		// Register threshold reached callback to function AirPressureReachedCB
+		// Register air pressure reached callback to function AirPressureReachedCB
 		b.AirPressureReached += AirPressureReachedCB;
 
-		// Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
+		// Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
 		b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
 
-		System.Console.WriteLine("Press enter to exit");
-		System.Console.ReadLine();
+		Console.WriteLine("Press enter to exit");
+		Console.ReadLine();
 		ipcon.Disconnect();
 	}
 }

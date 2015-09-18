@@ -13,7 +13,6 @@ type
     b: TBrickletBarometer;
   public
     procedure AirPressureCB(sender: TBrickletBarometer; const airPressure: longint);
-    procedure AltitudeCB(sender: TBrickletBarometer; const altitude: longint);
     procedure Execute;
   end;
 
@@ -31,12 +30,6 @@ begin
   WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
 end;
 
-{ Callback procedure for altitude callback (parameter has unit cm) }
-procedure TExample.AltitudeCB(sender: TBrickletBarometer; const altitude: longint);
-begin
-  WriteLn(Format('Altitude: %f m', [altitude/100.0]));
-end;
-
 procedure TExample.Execute;
 begin
   { Create IP connection }
@@ -49,21 +42,13 @@ begin
   ipcon.Connect(HOST, PORT);
   { Don't use device before ipcon is connected }
 
+  { Register air pressure callback to procedure AirPressureCB }
+  b.OnAirPressure := {$ifdef FPC}@{$endif}AirPressureCB;
+
   { Set period for air pressure callback to 1s (1000ms)
     Note: The air pressure callback is only called every second
           if the air pressure has changed since the last call! }
   b.SetAirPressureCallbackPeriod(1000);
-
-  { Register air pressure callback to procedure AirPressureCB }
-  b.OnAirPressure := {$ifdef FPC}@{$endif}AirPressureCB;
-
-  { Set period for altitude callback to 1s (1000ms)
-    Note: The altitude callback is only called every second
-          if the altitude has changed since the last call! }
-  b.SetAltitudeCallbackPeriod(1000);
-
-  { Register altitude callback to procedure AltitudeCB }
-  b.OnAltitude := {$ifdef FPC}@{$endif}AltitudeCB;
 
   WriteLn('Press key to exit');
   ReadLn;

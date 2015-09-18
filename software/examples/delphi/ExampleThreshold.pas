@@ -24,7 +24,7 @@ const
 var
   e: TExample;
 
-{ Callback procedure for air pressure greater than 1025 mbar (parameter has unit mbar/1000) }
+{ Callback procedure for air pressure reached callback (parameter has unit mbar/1000) }
 procedure TExample.AirPressureReachedCB(sender: TBrickletBarometer; const airPressure: longint);
 begin
   WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
@@ -46,10 +46,10 @@ begin
   { Get threshold callbacks with a debounce time of 10 seconds (10000ms) }
   b.SetDebouncePeriod(10000);
 
-  { Register threshold reached callback to procedure AirPressureReachedCB }
+  { Register air pressure reached callback to procedure AirPressureReachedCB }
   b.OnAirPressureReached := {$ifdef FPC}@{$endif}AirPressureReachedCB;
 
-  { Configure threshold for "greater than 1025 mbar" (unit is mbar/1000) }
+  { Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000) }
   b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
 
   WriteLn('Press key to exit');

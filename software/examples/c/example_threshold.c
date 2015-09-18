@@ -7,7 +7,7 @@
 #define PORT 4223
 #define UID "XYZ" // Change to your UID
 
-// Callback function for air pressure greater than 1025 mbar (parameter has unit mbar/1000)
+// Callback function for air pressure reached callback (parameter has unit mbar/1000)
 void cb_air_pressure_reached(int32_t air_pressure, void *user_data) {
 	(void)user_data; // avoid unused parameter warning
 
@@ -34,13 +34,13 @@ int main(void) {
 	// Get threshold callbacks with a debounce time of 10 seconds (10000ms)
 	barometer_set_debounce_period(&b, 10000);
 
-	// Register threshold reached callback to function cb_air_pressure_reached
+	// Register air pressure reached callback to function cb_air_pressure_reached
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE_REACHED,
 	                            (void *)cb_air_pressure_reached,
 	                            NULL);
 
-	// Configure threshold for "greater than 1025 mbar" (unit is mbar/1000)
+	// Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
 	barometer_set_air_pressure_callback_threshold(&b, '>', 1025*1000, 0);
 
 	printf("Press key to exit\n");

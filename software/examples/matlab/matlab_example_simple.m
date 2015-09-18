@@ -4,8 +4,8 @@ function matlab_example_simple()
 
     HOST = 'localhost';
     PORT = 4223;
-    UID = 'jmQ'; % Change to your UID
-    
+    UID = 'XYZ'; % Change to your UID
+
     ipcon = IPConnection(); % Create IP connection
     b = BrickletBarometer(UID, ipcon); % Create device object
 
@@ -14,12 +14,12 @@ function matlab_example_simple()
 
     % Get current air pressure (unit is mbar/1000)
     airPressure = b.getAirPressure();
-    fprintf('Air Pressure: %gmbar\n', airPressure/1000.0);
+    fprintf('Air Pressure: %g mbar\n', airPressure/1000.0);
 
     % Get current altitude (unit is cm)
     altitude = b.getAltitude();
-    fprintf('Altitude: %gm\n', altitude/100.0);
+    fprintf('Altitude: %g m\n', altitude/100.0);
 
-    input('Press any key to exit...\n', 's');
+    input('Press key to exit\n', 's');
     ipcon.disconnect();
 end

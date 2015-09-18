@@ -14,13 +14,6 @@ void cb_air_pressure(int32_t air_pressure, void *user_data) {
 	printf("Air Pressure: %f mbar\n", air_pressure/1000.0);
 }
 
-// Callback function for altitude callback (parameter has unit cm)
-void cb_altitude(int32_t altitude, void *user_data) {
-	(void)user_data; // avoid unused parameter warning
-
-	printf("Altitude: %f m\n", altitude/100.0);
-}
-
 int main(void) {
 	// Create IP connection
 	IPConnection ipcon;
@@ -37,27 +30,16 @@ int main(void) {
 	}
 	// Don't use device before ipcon is connected
 
-	// Set period for air pressure callback to 1s (1000ms)
-	// Note: The air pressure callback is only called every second
-	//       if the air pressure has changed since the last call!
-	barometer_set_air_pressure_callback_period(&b, 1000);
-
 	// Register air pressure callback to function cb_air_pressure
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE,
 	                            (void *)cb_air_pressure,
 	                            NULL);
 
-	// Set period for altitude callback to 1s (1000ms)
-	// Note: The altitude callback is only called every second
-	//       if the altitude has changed since the last call!
-	barometer_set_altitude_callback_period(&b, 1000);
-
-	// Register altitude callback to function cb_altitude
-	barometer_register_callback(&b,
-	                            BAROMETER_CALLBACK_ALTITUDE,
-	                            (void *)cb_altitude,
-	                            NULL);
+	// Set period for air pressure callback to 1s (1000ms)
+	// Note: The air pressure callback is only called every second
+	//       if the air pressure has changed since the last call!
+	barometer_set_air_pressure_callback_period(&b, 1000);
 
 	printf("Press key to exit\n");
 	getchar();

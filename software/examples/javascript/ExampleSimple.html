@@ -34,28 +34,30 @@
                 var b = new Tinkerforge.BrickletBarometer(UID, ipcon); // Create device object
                 ipcon.connect(HOST, PORT,
                     function(error) {
-                        textArea.value += 'Error: '+error+ '\n';
+                        textArea.value += 'Error: ' + error + '\n';
                     }
                 ); // Connect to brickd
-
                 // Don't use device before ipcon is connected
+
                 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
-                    function(connectReason) {
-                        // Get current air pressure (unit is mbar/1000) and current altitude (unit is cm)
+                    function (connectReason) {
+                        // Get current air pressure (unit is mbar/1000)
                         b.getAirPressure(
-                            function(ap) {
-                                textArea.value += 'Air pressure: '+ap/1000+' mbar\n';
+                            function (airPressure) {
+                                textArea.value += 'Air Pressure: ' + airPressure/1000.0 + ' mbar\n';
                             },
-                            function(error) {
-                                textArea.value += 'Error: '+error+'\n';
+                            function (error) {
+                                textArea.value += 'Error: ' + error + '\n';
                             }
                         );
+
+                        // Get current altitude (unit is cm)
                         b.getAltitude(
-                            function(alt) {
-                                textArea.value += 'Altitude: '+alt/100+' m\n';
+                            function (altitude) {
+                                textArea.value += 'Altitude: ' + altitude/100.0 + ' m\n';
                             },
-                            function(error) {
-                                textArea.value += 'Error: '+error+'\n';
+                            function (error) {
+                                textArea.value += 'Error: ' + error + '\n';
                             }
                         );
                     }
