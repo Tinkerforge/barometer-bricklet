@@ -5,7 +5,7 @@ class Example
 {
 	private static string HOST = "localhost";
 	private static int PORT = 4223;
-	private static string UID = "XYZ"; // Change to your UID
+	private static string UID = "XYZ"; // Change XYZ to the UID of your Barometer Bricklet
 
 	// Callback function for air pressure reached callback (parameter has unit mbar/1000)
 	static void AirPressureReachedCB(BrickletBarometer sender, int airPressure)

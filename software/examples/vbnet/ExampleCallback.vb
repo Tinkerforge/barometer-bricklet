@@ -4,7 +4,7 @@ Imports Tinkerforge
 Module ExampleCallback
     Const HOST As String = "localhost"
     Const PORT As Integer = 4223
-    Const UID As String = "XYZ" ' Change to your UID
+    Const UID As String = "XYZ" ' Change XYZ to the UID of your Barometer Bricklet
 
     ' Callback subroutine for air pressure callback (parameter has unit mbar/1000)
     Sub AirPressureCB(ByVal sender As BrickletBarometer, ByVal airPressure As Integer)

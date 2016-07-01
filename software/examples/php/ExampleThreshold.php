@@ -8,7 +8,7 @@ use Tinkerforge\BrickletBarometer;
 
 const HOST = 'localhost';
 const PORT = 4223;
-const UID = 'XYZ'; // Change to your UID
+const UID = 'XYZ'; // Change XYZ to the UID of your Barometer Bricklet
 
 // Callback function for air pressure reached callback (parameter has unit mbar/1000)
 function cb_airPressureReached($air_pressure)
