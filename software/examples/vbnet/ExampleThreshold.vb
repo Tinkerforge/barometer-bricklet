@@ -7,7 +7,8 @@ Module ExampleThreshold
     Const UID As String = "XYZ" ' Change XYZ to the UID of your Barometer Bricklet
 
     ' Callback subroutine for air pressure reached callback (parameter has unit mbar/1000)
-    Sub AirPressureReachedCB(ByVal sender As BrickletBarometer, ByVal airPressure As Integer)
+    Sub AirPressureReachedCB(ByVal sender As BrickletBarometer, _
+                             ByVal airPressure As Integer)
         Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " mbar")
         Console.WriteLine("Enjoy the potentially good weather!")
     End Sub

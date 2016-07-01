@@ -12,7 +12,8 @@ type
     ipcon: TIPConnection;
     b: TBrickletBarometer;
   public
-    procedure AirPressureReachedCB(sender: TBrickletBarometer; const airPressure: longint);
+    procedure AirPressureReachedCB(sender: TBrickletBarometer;
+                                   const airPressure: longint);
     procedure Execute;
   end;
 
@@ -25,7 +26,8 @@ var
   e: TExample;
 
 { Callback procedure for air pressure reached callback (parameter has unit mbar/1000) }
-procedure TExample.AirPressureReachedCB(sender: TBrickletBarometer; const airPressure: longint);
+procedure TExample.AirPressureReachedCB(sender: TBrickletBarometer;
+                                        const airPressure: longint);
 begin
   WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
   WriteLn('Enjoy the potentially good weather!');

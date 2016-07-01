@@ -27,7 +27,8 @@ $ipcon->connect(HOST, PORT); // Connect to brickd
 $b->setDebouncePeriod(10000);
 
 // Register air pressure reached callback to function cb_airPressureReached
-$b->registerCallback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED, 'cb_airPressureReached');
+$b->registerCallback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED,
+                     'cb_airPressureReached');
 
 // Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
 $b->setAirPressureCallbackThreshold('>', 1025*1000, 0);
