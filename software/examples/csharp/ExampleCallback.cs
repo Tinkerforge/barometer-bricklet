@@ -22,7 +22,7 @@ class Example
 		// Don't use device before ipcon is connected
 
 		// Register air pressure callback to function AirPressureCB
-		b.AirPressure += AirPressureCB;
+		b.AirPressureCallback += AirPressureCB;
 
 		// Set period for air pressure callback to 1s (1000ms)
 		// Note: The air pressure callback is only called every second

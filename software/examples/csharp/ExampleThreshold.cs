@@ -26,7 +26,7 @@ class Example
 		b.SetDebouncePeriod(10000);
 
 		// Register air pressure reached callback to function AirPressureReachedCB
-		b.AirPressureReached += AirPressureReachedCB;
+		b.AirPressureReachedCallback += AirPressureReachedCB;
 
 		// Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
 		b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
