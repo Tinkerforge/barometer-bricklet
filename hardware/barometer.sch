@@ -114,10 +114,11 @@ P 6000 5800
 F 0 "U2" H 5700 6200 60  0000 C CNN
 F 1 "MS5611" H 5750 5400 60  0000 C CNN
 F 2 "MS5611" H 4800 6150 60  0001 C CNN
+F 3 "" H 6000 5800 60  0001 C CNN
 	1    6000 5800
 	1    0    0    -1  
 $EndComp
-Text Notes 550  7200 0    40   ~ 0
+Text Notes 600  7700 0    40   ~ 0
 Copyright Tinkerforge GmbH 2011.\nThis documentation describes Open Hardware and is licensed under the\nCERN OHL v. 1.1.\nYou may redistribute and modify this documentation under the terms of the\nCERN OHL v.1.1. (http://ohwr.org/cernohl). This documentation is distributed\nWITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING OF\nMERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A\nPARTICULAR PURPOSE. Please see the CERN OHL v.1.1 for applicable\nconditions\n
 NoConn ~ 4950 2500
 $Comp
@@ -126,6 +127,8 @@ U 1 1 4CE2C195
 P 6000 6400
 F 0 "#PWR01" H 6000 6400 30  0001 C CNN
 F 1 "GND" H 6000 6330 30  0001 C CNN
+F 2 "" H 6000 6400 60  0001 C CNN
+F 3 "" H 6000 6400 60  0001 C CNN
 	1    6000 6400
 	1    0    0    -1  
 $EndComp
@@ -135,6 +138,8 @@ U 1 1 4CE2C190
 P 6750 5450
 F 0 "#PWR02" H 6750 5450 30  0001 C CNN
 F 1 "GND" H 6750 5380 30  0001 C CNN
+F 2 "" H 6750 5450 60  0001 C CNN
+F 3 "" H 6750 5450 60  0001 C CNN
 	1    6750 5450
 	1    0    0    -1  
 $EndComp
@@ -144,6 +149,8 @@ U 1 1 4CE2C18A
 P 6000 5200
 F 0 "#PWR03" H 6000 5300 30  0001 C CNN
 F 1 "VCC" H 6000 5300 30  0000 C CNN
+F 2 "" H 6000 5200 60  0001 C CNN
+F 3 "" H 6000 5200 60  0001 C CNN
 	1    6000 5200
 	1    0    0    -1  
 $EndComp
@@ -153,7 +160,8 @@ U 1 1 4CE2BEE5
 P 6550 5300
 F 0 "C2" V 6700 5250 50  0000 L CNN
 F 1 "100nF" V 6400 5200 50  0000 L CNN
-F 2 "0603" H 6550 5300 60  0001 C CNN
+F 2 "C0603" H 6550 5300 60  0001 C CNN
+F 3 "" H 6550 5300 60  0001 C CNN
 	1    6550 5300
 	0    -1   -1   0   
 $EndComp
@@ -226,7 +234,7 @@ U 1 1 4C5FD6ED
 P 6350 3950
 F 0 "C1" V 6450 3950 50  0000 L CNN
 F 1 "100nF" V 6200 3950 50  0000 L CNN
-F 2 "0603" H 6350 3950 60  0001 C CNN
+F 2 "C0603" H 6350 3950 60  0001 C CNN
 F 3 "" H 6350 3950 60  0001 C CNN
 	1    6350 3950
 	0    -1   -1   0   
