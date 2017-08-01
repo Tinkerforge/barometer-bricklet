@@ -11,7 +11,7 @@ tinkerforge dispatch barometer-bricklet $uid air-pressure-reached\
  --execute "echo Air Pressure: {air_pressure} mbar/1000. Enjoy the potentially good weather!" &
 
 # Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
-tinkerforge call barometer-bricklet $uid set-air-pressure-callback-threshold greater 1025000 0
+tinkerforge call barometer-bricklet $uid set-air-pressure-callback-threshold threshold-option-greater 1025000 0
 
 echo "Press key to exit"; read dummy
 
