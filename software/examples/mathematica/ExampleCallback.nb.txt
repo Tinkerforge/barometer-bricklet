@@ -13,7 +13,7 @@ ipcon@Connect[host,port]
 (*Callback function for air pressure callback (parameter has unit mbar/1000)*)
 AirPressureCB[sender_,airPressure_]:=
  Print["Air Pressure: "<>ToString[N[Quantity[airPressure,"mbar/1000"]]]]
-AddEventHandler[b@AirPressure,AirPressureCB]
+AddEventHandler[b@AirPressureCallback,AirPressureCB]
 
 (*Set period for air pressure callback to 1s (1000ms)*)
 (*Note: The air pressure callback is only called every second*)

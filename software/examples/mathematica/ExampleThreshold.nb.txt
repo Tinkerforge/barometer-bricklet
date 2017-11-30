@@ -20,7 +20,7 @@ AirPressureReachedCB[sender_,airPressure_]:=
   Print["Enjoy the potentially good weather!"]
  ]
 
-AddEventHandler[b@AirPressureReached,AirPressureReachedCB]
+AddEventHandler[b@AirPressureReachedCallback,AirPressureReachedCB]
 
 (*Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)*)
 option=Tinkerforge`BrickletBarometer`THRESHOLDUOPTIONUGREATER

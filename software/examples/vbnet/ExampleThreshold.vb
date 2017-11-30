@@ -24,7 +24,7 @@ Module ExampleThreshold
         b.SetDebouncePeriod(10000)
 
         ' Register air pressure reached callback to subroutine AirPressureReachedCB
-        AddHandler b.AirPressureReached, AddressOf AirPressureReachedCB
+        AddHandler b.AirPressureReachedCallback, AddressOf AirPressureReachedCB
 
         ' Configure threshold for air_pressure "greater than 1025 mbar" (unit is mbar/1000)
         b.SetAirPressureCallbackThreshold(">"C, 1025*1000, 0)

@@ -19,7 +19,7 @@ Module ExampleCallback
         ' Don't use device before ipcon is connected
 
         ' Register air pressure callback to subroutine AirPressureCB
-        AddHandler b.AirPressure, AddressOf AirPressureCB
+        AddHandler b.AirPressureCallback, AddressOf AirPressureCB
 
         ' Set period for air pressure callback to 1s (1000ms)
         ' Note: The air pressure callback is only called every second
