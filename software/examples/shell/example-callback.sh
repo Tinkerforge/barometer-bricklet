@@ -3,7 +3,7 @@
 
 uid=XYZ # Change XYZ to the UID of your Barometer Bricklet
 
-# Handle incoming air pressure callbacks (parameter has unit mbar/1000)
+# Handle incoming air pressure callbacks
 tinkerforge dispatch barometer-bricklet $uid air-pressure &
 
 # Set period for air pressure callback to 1s (1000ms)

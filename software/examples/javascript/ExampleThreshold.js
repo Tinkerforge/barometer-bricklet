@@ -19,14 +19,14 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
         // Get threshold callbacks with a debounce time of 10 seconds (10000ms)
         b.setDebouncePeriod(10000);
 
-        // Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
+        // Configure threshold for air pressure "greater than 1025 mbar"
         b.setAirPressureCallbackThreshold('>', 1025*1000, 0);
     }
 );
 
 // Register air pressure reached callback
 b.on(Tinkerforge.BrickletBarometer.CALLBACK_AIR_PRESSURE_REACHED,
-    // Callback function for air pressure reached callback (parameter has unit mbar/1000)
+    // Callback function for air pressure reached callback
     function (airPressure) {
         console.log('Air Pressure: ' + airPressure/1000.0 + ' mbar');
         console.log('Enjoy the potentially good weather!');

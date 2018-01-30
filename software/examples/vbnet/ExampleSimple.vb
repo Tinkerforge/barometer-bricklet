@@ -13,11 +13,11 @@ Module ExampleSimple
         ipcon.Connect(HOST, PORT) ' Connect to brickd
         ' Don't use device before ipcon is connected
 
-        ' Get current air pressure (unit is mbar/1000)
+        ' Get current air pressure
         Dim airPressure As Integer = b.GetAirPressure()
         Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " mbar")
 
-        ' Get current altitude (unit is cm)
+        ' Get current altitude
         Dim altitude As Integer = b.GetAltitude()
         Console.WriteLine("Altitude: " + (altitude/100.0).ToString() + " m")
 

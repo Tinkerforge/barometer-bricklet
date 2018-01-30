@@ -13,7 +13,7 @@ ipcon@Connect[host,port]
 (*Get threshold callbacks with a debounce time of 10 seconds (10000ms)*)
 b@SetDebouncePeriod[10000]
 
-(*Callback function for air pressure reached callback (parameter has unit mbar/1000)*)
+(*Callback function for air pressure reached callback*)
 AirPressureReachedCB[sender_,airPressure_]:=
  Module[{},
   Print["Air Pressure: "<>ToString[N[Quantity[airPressure,"mbar/1000"]]]];
@@ -22,7 +22,7 @@ AirPressureReachedCB[sender_,airPressure_]:=
 
 AddEventHandler[b@AirPressureReachedCallback,AirPressureReachedCB]
 
-(*Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)*)
+(*Configure threshold for air pressure "greater than 1025 mbar"*)
 option=Tinkerforge`BrickletBarometer`THRESHOLDUOPTIONUGREATER
 b@SetAirPressureCallbackThreshold[option,1025*1000,0]
 

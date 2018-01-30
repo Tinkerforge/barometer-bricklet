@@ -7,7 +7,7 @@ class Example
 	private static int PORT = 4223;
 	private static string UID = "XYZ"; // Change XYZ to the UID of your Barometer Bricklet
 
-	// Callback function for air pressure callback (parameter has unit mbar/1000)
+	// Callback function for air pressure callback
 	static void AirPressureCB(BrickletBarometer sender, int airPressure)
 	{
 		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");

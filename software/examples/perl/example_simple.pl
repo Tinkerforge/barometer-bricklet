@@ -13,11 +13,11 @@ my $b = Tinkerforge::BrickletBarometer->new(&UID, $ipcon); # Create device objec
 $ipcon->connect(&HOST, &PORT); # Connect to brickd
 # Don't use device before ipcon is connected
 
-# Get current air pressure (unit is mbar/1000)
+# Get current air pressure
 my $air_pressure = $b->get_air_pressure();
 print "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
 
-# Get current altitude (unit is cm)
+# Get current altitude
 my $altitude = $b->get_altitude();
 print "Altitude: " . $altitude/100.0 . " m\n";
 

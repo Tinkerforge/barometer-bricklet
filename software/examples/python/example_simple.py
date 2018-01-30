@@ -15,11 +15,11 @@ if __name__ == "__main__":
     ipcon.connect(HOST, PORT) # Connect to brickd
     # Don't use device before ipcon is connected
 
-    # Get current air pressure (unit is mbar/1000)
+    # Get current air pressure
     air_pressure = b.get_air_pressure()
     print("Air Pressure: " + str(air_pressure/1000.0) + " mbar")
 
-    # Get current altitude (unit is cm)
+    # Get current altitude
     altitude = b.get_altitude()
     print("Altitude: " + str(altitude/100.0) + " m")
 

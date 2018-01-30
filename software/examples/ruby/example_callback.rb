@@ -16,7 +16,7 @@ b = BrickletBarometer.new UID, ipcon # Create device object
 ipcon.connect HOST, PORT # Connect to brickd
 # Don't use device before ipcon is connected
 
-# Register air pressure callback (parameter has unit mbar/1000)
+# Register air pressure callback
 b.register_callback(BrickletBarometer::CALLBACK_AIR_PRESSURE) do |air_pressure|
   puts "Air Pressure: #{air_pressure/1000.0} mbar"
 end

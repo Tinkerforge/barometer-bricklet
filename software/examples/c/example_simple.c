@@ -23,7 +23,7 @@ int main(void) {
 	}
 	// Don't use device before ipcon is connected
 
-	// Get current air pressure (unit is mbar/1000)
+	// Get current air pressure
 	int32_t air_pressure;
 	if(barometer_get_air_pressure(&b, &air_pressure) < 0) {
 		fprintf(stderr, "Could not get air pressure, probably timeout\n");
@@ -32,7 +32,7 @@ int main(void) {
 
 	printf("Air Pressure: %f mbar\n", air_pressure/1000.0);
 
-	// Get current altitude (unit is cm)
+	// Get current altitude
 	int32_t altitude;
 	if(barometer_get_altitude(&b, &altitude) < 0) {
 		fprintf(stderr, "Could not get altitude, probably timeout\n");

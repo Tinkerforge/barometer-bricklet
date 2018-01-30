@@ -22,14 +22,14 @@ Notebook[{
    RowBox[{"b", "@", RowBox[{"SetDebouncePeriod", "[", "10000", "]"}]}],
    RowBox[{"
 "}],
-   RowBox[{"(*", "Callback function for air pressure reached callback (parameter has unit mbar/1000)", "*)"}],
+   RowBox[{"(*", "Callback function for air pressure reached callback", "*)"}],
    RowBox[{RowBox[{"AirPressureReachedCB", "[", RowBox[{"sender_", ",", "airPressure_"}], "]"}], ":=", "\[IndentingNewLine]", RowBox[{"Module", "[", RowBox[{RowBox[{"{", "}"}], ",", RowBox[{"\[IndentingNewLine]", RowBox[{"Print", "[", RowBox[{"\"\<Air Pressure: \>\"", "<>", RowBox[{"ToString", "[", RowBox[{"N", "[", RowBox[{"Quantity", "[", RowBox[{"airPressure", ",", "\"\<mbar/1000\>\""}], "]"}], "]"}], "]"}]}], "]"}], ";", "\[IndentingNewLine]", RowBox[{"Print", "[", "\"\<Enjoy the potentially good weather!\>\"", "]"}], "\[IndentingNewLine]"}]}], "]"}]}],
    RowBox[{"
 "}],
    RowBox[{"AddEventHandler", "[", RowBox[{RowBox[{"b", "@", "AirPressureReachedCallback"}], ",", "AirPressureReachedCB"}], "]"}],
    RowBox[{"
 "}],
-   RowBox[{"(*", "Configure threshold for air pressure ", "\"\<greater than 1025 mbar\>\"", " (unit is mbar/1000)", "*)"}],
+   RowBox[{"(*", "Configure threshold for air pressure ", "\"\<greater than 1025 mbar\>\"", "", "*)"}],
    RowBox[{"option", "=", "Tinkerforge`BrickletBarometer`THRESHOLDUOPTIONUGREATER"}],
    RowBox[{"b", "@", RowBox[{"SetAirPressureCallbackThreshold", "[", RowBox[{"option", ",", RowBox[{"1025", "*", "1000"}], ",", "0"}], "]"}]}],
    RowBox[{"

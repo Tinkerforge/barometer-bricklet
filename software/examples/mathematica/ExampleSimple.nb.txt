@@ -10,10 +10,10 @@ ipcon=NETNew["Tinkerforge.IPConnection"]
 b=NETNew["Tinkerforge.BrickletBarometer",uid,ipcon]
 ipcon@Connect[host,port]
 
-(*Get current air pressure (unit is mbar/1000)*)
+(*Get current air pressure*)
 Print["Air Pressure: "<>ToString[N[Quantity[b@GetAirPressure[],"mbar/1000"]]]]
 
-(*Get current altitude (unit is cm)*)
+(*Get current altitude*)
 Print["Altitude: "<>ToString[N[Quantity[b@GetAltitude[],"m/100"]]]]
 
 (*Clean up*)

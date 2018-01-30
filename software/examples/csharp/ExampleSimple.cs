@@ -15,11 +15,11 @@ class Example
 		ipcon.Connect(HOST, PORT); // Connect to brickd
 		// Don't use device before ipcon is connected
 
-		// Get current air pressure (unit is mbar/1000)
+		// Get current air pressure
 		int airPressure = b.GetAirPressure();
 		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
 
-		// Get current altitude (unit is cm)
+		// Get current altitude
 		int altitude = b.GetAltitude();
 		Console.WriteLine("Altitude: " + altitude/100.0 + " m");
 

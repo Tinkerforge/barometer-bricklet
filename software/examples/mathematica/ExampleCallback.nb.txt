@@ -10,7 +10,7 @@ ipcon=NETNew["Tinkerforge.IPConnection"]
 b=NETNew["Tinkerforge.BrickletBarometer",uid,ipcon]
 ipcon@Connect[host,port]
 
-(*Callback function for air pressure callback (parameter has unit mbar/1000)*)
+(*Callback function for air pressure callback*)
 AirPressureCB[sender_,airPressure_]:=
  Print["Air Pressure: "<>ToString[N[Quantity[airPressure,"mbar/1000"]]]]
 AddEventHandler[b@AirPressureCallback,AirPressureCB]

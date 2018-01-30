@@ -24,7 +24,7 @@ const
 var
   e: TExample;
 
-{ Callback procedure for air pressure callback (parameter has unit mbar/1000) }
+{ Callback procedure for air pressure callback }
 procedure TExample.AirPressureCB(sender: TBrickletBarometer; const airPressure: longint);
 begin
   WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));

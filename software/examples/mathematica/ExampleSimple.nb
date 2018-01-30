@@ -18,11 +18,11 @@ Notebook[{
    RowBox[{"ipcon", "@", RowBox[{"Connect", "[", RowBox[{"host", ",", "port"}], "]"}]}],
    RowBox[{"
 "}],
-   RowBox[{"(*", "Get current air pressure (unit is mbar/1000)", "*)"}],
+   RowBox[{"(*", "Get current air pressure", "*)"}],
    RowBox[{"Print", "[", RowBox[{"\"\<Air Pressure: \>\"", "<>", RowBox[{"ToString", "[", RowBox[{"N", "[", RowBox[{"Quantity", "[", RowBox[{RowBox[{"b", "@", RowBox[{"GetAirPressure", "[", "]"}]}], ",", "\"\<mbar/1000\>\""}], "]"}], "]"}], "]"}]}], "]"}],
    RowBox[{"
 "}],
-   RowBox[{"(*", "Get current altitude (unit is cm)", "*)"}],
+   RowBox[{"(*", "Get current altitude", "*)"}],
    RowBox[{"Print", "[", RowBox[{"\"\<Altitude: \>\"", "<>", RowBox[{"ToString", "[", RowBox[{"N", "[", RowBox[{"Quantity", "[", RowBox[{RowBox[{"b", "@", RowBox[{"GetAltitude", "[", "]"}]}], ",", "\"\<m/100\>\""}], "]"}], "]"}], "]"}]}], "]"}],
    RowBox[{"
 "}],

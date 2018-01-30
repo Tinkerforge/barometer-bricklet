@@ -24,7 +24,7 @@ function matlab_example_callback()
     ipcon.disconnect();
 end
 
-% Callback function for air pressure callback (parameter has unit mbar/1000)
+% Callback function for air pressure callback
 function cb_air_pressure(e)
     fprintf('Air Pressure: %g mbar\n', e.airPressure/1000.0);
 end

@@ -17,7 +17,7 @@ public class ExampleCallback {
 		ipcon.connect(HOST, PORT); // Connect to brickd
 		// Don't use device before ipcon is connected
 
-		// Add air pressure listener (parameter has unit mbar/1000)
+		// Add air pressure listener
 		b.addAirPressureListener(new BrickletBarometer.AirPressureListener() {
 			public void airPressure(int airPressure) {
 				System.out.println("Air Pressure: " + airPressure/1000.0 + " mbar");

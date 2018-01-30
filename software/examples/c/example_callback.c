@@ -7,7 +7,7 @@
 #define PORT 4223
 #define UID "XYZ" // Change XYZ to the UID of your Barometer Bricklet
 
-// Callback function for air pressure callback (parameter has unit mbar/1000)
+// Callback function for air pressure callback
 void cb_air_pressure(int32_t air_pressure, void *user_data) {
 	(void)user_data; // avoid unused parameter warning
 

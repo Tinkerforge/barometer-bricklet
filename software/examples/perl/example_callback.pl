@@ -7,7 +7,7 @@ use constant HOST => 'localhost';
 use constant PORT => 4223;
 use constant UID => 'XYZ'; # Change XYZ to the UID of your Barometer Bricklet
 
-# Callback subroutine for air pressure callback (parameter has unit mbar/1000)
+# Callback subroutine for air pressure callback
 sub cb_air_pressure
 {
     my ($air_pressure) = @_;

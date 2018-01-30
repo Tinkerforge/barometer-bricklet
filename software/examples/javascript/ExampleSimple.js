@@ -16,7 +16,7 @@ ipcon.connect(HOST, PORT,
 
 ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
     function (connectReason) {
-        // Get current air pressure (unit is mbar/1000)
+        // Get current air pressure
         b.getAirPressure(
             function (airPressure) {
                 console.log('Air Pressure: ' + airPressure/1000.0 + ' mbar');
@@ -26,7 +26,7 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
             }
         );
 
-        // Get current altitude (unit is cm)
+        // Get current altitude
         b.getAltitude(
             function (altitude) {
                 console.log('Altitude: ' + altitude/100.0 + ' m');

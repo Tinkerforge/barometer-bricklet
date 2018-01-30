@@ -7,7 +7,7 @@ class Example
 	private static int PORT = 4223;
 	private static string UID = "XYZ"; // Change XYZ to the UID of your Barometer Bricklet
 
-	// Callback function for air pressure reached callback (parameter has unit mbar/1000)
+	// Callback function for air pressure reached callback
 	static void AirPressureReachedCB(BrickletBarometer sender, int airPressure)
 	{
 		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
@@ -28,7 +28,7 @@ class Example
 		// Register air pressure reached callback to function AirPressureReachedCB
 		b.AirPressureReachedCallback += AirPressureReachedCB;
 
-		// Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
+		// Configure threshold for air pressure "greater than 1025 mbar"
 		b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
 
 		Console.WriteLine("Press enter to exit");

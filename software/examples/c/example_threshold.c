@@ -7,7 +7,7 @@
 #define PORT 4223
 #define UID "XYZ" // Change XYZ to the UID of your Barometer Bricklet
 
-// Callback function for air pressure reached callback (parameter has unit mbar/1000)
+// Callback function for air pressure reached callback
 void cb_air_pressure_reached(int32_t air_pressure, void *user_data) {
 	(void)user_data; // avoid unused parameter warning
 
@@ -40,7 +40,7 @@ int main(void) {
 	                            (void *)cb_air_pressure_reached,
 	                            NULL);
 
-	// Configure threshold for air pressure "greater than 1025 mbar" (unit is mbar/1000)
+	// Configure threshold for air pressure "greater than 1025 mbar"
 	barometer_set_air_pressure_callback_threshold(&b, '>', 1025*1000, 0);
 
 	printf("Press key to exit\n");

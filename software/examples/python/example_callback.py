@@ -8,7 +8,7 @@ UID = "XYZ" # Change XYZ to the UID of your Barometer Bricklet
 from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_barometer import BrickletBarometer
 
-# Callback function for air pressure callback (parameter has unit mbar/1000)
+# Callback function for air pressure callback
 def cb_air_pressure(air_pressure):
     print("Air Pressure: " + str(air_pressure/1000.0) + " mbar")
 

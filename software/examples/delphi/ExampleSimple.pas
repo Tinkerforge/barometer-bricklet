@@ -36,11 +36,11 @@ begin
   ipcon.Connect(HOST, PORT);
   { Don't use device before ipcon is connected }
 
-  { Get current air pressure (unit is mbar/1000) }
+  { Get current air pressure }
   airPressure := b.GetAirPressure;
   WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
 
-  { Get current altitude (unit is cm) }
+  { Get current altitude }
   altitude := b.GetAltitude;
   WriteLn(Format('Altitude: %f m', [altitude/100.0]));
 

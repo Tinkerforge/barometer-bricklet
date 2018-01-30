@@ -11,11 +11,11 @@ function octave_example_simple()
     ipcon.connect(HOST, PORT); % Connect to brickd
     % Don't use device before ipcon is connected
 
-    % Get current air pressure (unit is mbar/1000)
+    % Get current air pressure
     airPressure = b.getAirPressure();
     fprintf("Air Pressure: %g mbar\n", airPressure/1000.0);
 
-    % Get current altitude (unit is cm)
+    % Get current altitude
     altitude = b.getAltitude();
     fprintf("Altitude: %g m\n", altitude/100.0);
 
