@@ -26,7 +26,7 @@ Module ExampleThreshold
         ' Register air pressure reached callback to subroutine AirPressureReachedCB
         AddHandler b.AirPressureReachedCallback, AddressOf AirPressureReachedCB
 
-        ' Configure threshold for air_pressure "greater than 1025 mbar"
+        ' Configure threshold for air pressure "greater than 1025 mbar"
         b.SetAirPressureCallbackThreshold(">"C, 1025*1000, 0)
 
         Console.WriteLine("Press key to exit")
