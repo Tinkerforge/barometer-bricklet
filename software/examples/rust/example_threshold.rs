@@ -1,33 +1,34 @@
 use std::{error::Error, io, thread};
-use tinkerforge::{barometer_bricklet::*, ipconnection::IpConnection};
+use tinkerforge::{barometer_bricklet::*, ip_connection::IpConnection};
 
-const HOST: &str = "127.0.0.1";
+const HOST: &str = "localhost";
 const PORT: u16 = 4223;
-const UID: &str = "XYZ"; // Change XYZ to the UID of your Barometer Bricklet
+const UID: &str = "XYZ"; // Change XYZ to the UID of your Barometer Bricklet.
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let ipcon = IpConnection::new(); // Create IP connection
-    let barometer_bricklet = BarometerBricklet::new(UID, &ipcon); // Create device object
+    let ipcon = IpConnection::new(); // Create IP connection.
+    let b = BarometerBricklet::new(UID, &ipcon); // Create device object.
 
-    ipcon.connect(HOST, PORT).recv()??; // Connect to brickd
-                                        // Don't use device before ipcon is connected
+    ipcon.connect((HOST, PORT)).recv()??; // Connect to brickd.
+                                          // Don't use device before ipcon is connected.
 
-    // Get threshold listeners with a debounce time of 10 seconds (10000ms)
-    barometer_bricklet.set_debounce_period(10000);
+    // Get threshold receivers with a debounce time of 10 seconds (10000ms).
+    b.set_debounce_period(10000);
 
-    //Create listener for air pressure reached events.
-    let air_pressure_reached_listener = barometer_bricklet.get_air_pressure_reached_receiver();
-    // Spawn thread to handle received events. This thread ends when the barometer_bricklet
+    // Create receiver for air pressure reached events.
+    let air_pressure_reached_receiver = b.get_air_pressure_reached_receiver();
+
+    // Spawn thread to handle received events. This thread ends when the `b` object
     // is dropped, so there is no need for manual cleanup.
     thread::spawn(move || {
-        for event in air_pressure_reached_listener {
-            println!("Air Pressure: {}{}", event as f32 / 1000.0, " mbar");
+        for air_pressure_reached in air_pressure_reached_receiver {
+            println!("Air Pressure: {} mbar", air_pressure_reached as f32 / 1000.0);
             println!("Enjoy the potentially good weather!");
         }
     });
 
-    // Configure threshold for air pressure "greater than 1025 mbar"
-    barometer_bricklet.set_air_pressure_callback_threshold('>', 1025 * 1000, 0);
+    // Configure threshold for air pressure "greater than 1025 mbar".
+    b.set_air_pressure_callback_threshold('>', 1025 * 1000, 0);
 
     println!("Press enter to exit.");
     let mut _input = String::new();
