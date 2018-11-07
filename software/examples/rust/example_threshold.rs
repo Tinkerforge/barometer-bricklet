@@ -15,10 +15,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     // Get threshold receivers with a debounce time of 10 seconds (10000ms).
     b.set_debounce_period(10000);
 
-    // Create receiver for air pressure reached events.
-    let air_pressure_reached_receiver = b.get_air_pressure_reached_receiver();
+    let air_pressure_reached_receiver = b.get_air_pressure_reached_callback_receiver();
 
-    // Spawn thread to handle received events. This thread ends when the `b` object
+    // Spawn thread to handle received callback messages.
+    // This thread ends when the `b` object
     // is dropped, so there is no need for manual cleanup.
     thread::spawn(move || {
         for air_pressure_reached in air_pressure_reached_receiver {

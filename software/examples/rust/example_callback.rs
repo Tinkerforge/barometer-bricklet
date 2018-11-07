@@ -12,10 +12,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     ipcon.connect((HOST, PORT)).recv()??; // Connect to brickd.
                                           // Don't use device before ipcon is connected.
 
-    // Create receiver for air pressure events.
-    let air_pressure_receiver = b.get_air_pressure_receiver();
+    let air_pressure_receiver = b.get_air_pressure_callback_receiver();
 
-    // Spawn thread to handle received events. This thread ends when the `b` object
+    // Spawn thread to handle received callback messages.
+    // This thread ends when the `b` object
     // is dropped, so there is no need for manual cleanup.
     thread::spawn(move || {
         for air_pressure in air_pressure_receiver {
