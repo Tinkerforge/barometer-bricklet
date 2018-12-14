@@ -22,7 +22,7 @@ func main() {
 	b.SetDebouncePeriod(10000)
 
 	b.RegisterAirPressureReachedCallback(func(airPressure int32) {
-		fmt.Printf("Air Pressure: %d mbar\n", float64(airPressure)/1000.0)
+		fmt.Printf("Air Pressure: %f mbar\n", float64(airPressure)/1000.0)
 		fmt.Println("Enjoy the potentially good weather!")
 	})
 
