@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"tinkerforge/barometer_bricklet"
-	"tinkerforge/ipconnection"
+	"github.com/tinkerforge/go-api-bindings/barometer_bricklet"
+	"github.com/tinkerforge/go-api-bindings/ipconnection"
 )
 
 const ADDR string = "localhost:4223"
