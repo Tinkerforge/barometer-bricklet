@@ -1,0 +1,12 @@
+
+
+# Change XYZ to the UID of your Barometer Bricklet
+
+setup:
+	# Handle incoming air pressure callbacks
+	subscribe to tinkerforge/callback/barometer_bricklet/XYZ/air_pressure
+	publish '{"register": true}' to tinkerforge/register/barometer_bricklet/XYZ/air_pressure # Register air_pressure callback
+	# Set period for air pressure callback to 1s (1000ms)
+	# Note: The air pressure callback is only called every second
+	#       if the air pressure has changed since the last call!
+	publish '{"period": 1000}' to tinkerforge/request/barometer_bricklet/XYZ/set_air_pressure_callback_period
