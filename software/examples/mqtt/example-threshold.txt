@@ -3,8 +3,10 @@
 setup:
 	# Get threshold callbacks with a debounce time of 10 seconds (10000ms)
 	publish '{"debounce": 10000}' to tinkerforge/request/barometer_bricklet/XYZ/set_debounce_period
+	
 	# Handle incoming air pressure reached callbacks
 	subscribe to tinkerforge/callback/barometer_bricklet/XYZ/air_pressure_reached
 	publish '{"register": true}' to tinkerforge/register/barometer_bricklet/XYZ/air_pressure_reached # Register air_pressure_reached callback
+	
 	# Configure threshold for air pressure "greater than 1025 mbar"
-	publish '{"option": "greater", "min_air_pressure": 1025000, "max_air_pressure": 0}' to tinkerforge/request/barometer_bricklet/XYZ/set_air_pressure_callback_threshold
+	publish '{"option": "greater", "min": 1025000, "max": 0}' to tinkerforge/request/barometer_bricklet/XYZ/set_air_pressure_callback_threshold

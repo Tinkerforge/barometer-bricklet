@@ -2,8 +2,9 @@
 
 setup:
 	# Get current air pressure
-	subscribe to tinkerforge/response/barometer/XYZ/get_air_pressure
+	subscribe to tinkerforge/response/barometer_bricklet/XYZ/get_air_pressure
 	publish '' to tinkerforge/request/barometer_bricklet/XYZ/get_air_pressure 
+	
 	# Get current altitude
-	subscribe to tinkerforge/response/barometer/XYZ/get_altitude
+	subscribe to tinkerforge/response/barometer_bricklet/XYZ/get_altitude
 	publish '' to tinkerforge/request/barometer_bricklet/XYZ/get_altitude 
