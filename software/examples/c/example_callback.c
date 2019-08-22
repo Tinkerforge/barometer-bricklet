@@ -33,7 +33,7 @@ int main(void) {
 	// Register air pressure callback to function cb_air_pressure
 	barometer_register_callback(&b,
 	                            BAROMETER_CALLBACK_AIR_PRESSURE,
-	                            (void *)cb_air_pressure,
+	                            (void (*)(void))cb_air_pressure,
 	                            NULL);
 
 	// Set period for air pressure callback to 1s (1000ms)
