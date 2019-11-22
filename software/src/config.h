@@ -102,7 +102,7 @@ typedef struct {
 	uint8_t d2_avg_tick;
 	uint32_t d2_avg;
 
-	int32_t air_pressure_ref; // mbar/1000
+	int32_t air_pressure_ref; // hPa/1000
 
 	int16_t temperature; // °C/100
 	uint8_t num_moving_average;

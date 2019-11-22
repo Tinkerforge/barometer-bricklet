@@ -52,8 +52,8 @@ const SimpleUnitProperty sup[] = {
 const uint8_t smp_length = sizeof(smp);
 
 typedef struct {
-	int32_t air_pressure; // mbar/1000
-	int32_t factor; // altitude difference in mm per mbar/1000 air pressure difference
+	int32_t air_pressure; // hPa/1000
+	int32_t factor; // altitude difference in mm per hPa/1000 air pressure difference
 } __attribute__((__packed__)) AltitudeFactor;
 
 const AltitudeFactor altitude_factors[] = {
@@ -292,7 +292,7 @@ void calculate(void) {
 		}
 	}
 
-	int32_t air_pressure = (((((int64_t)BC->d1_moving_avg * sens) >> 21) - off) * 10) >> 15; // mbar/1000
+	int32_t air_pressure = (((((int64_t)BC->d1_moving_avg * sens) >> 21) - off) * 10) >> 15; // hPa/1000
 
 	air_pressure = BETWEEN(MIN_AIR_PRESSURE, air_pressure, MAX_AIR_PRESSURE);
 	BC->value[SIMPLE_UNIT_AIR_PRESSURE] = air_pressure; // FIXME
