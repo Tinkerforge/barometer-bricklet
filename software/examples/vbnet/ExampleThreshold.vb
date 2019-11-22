@@ -9,7 +9,7 @@ Module ExampleThreshold
     ' Callback subroutine for air pressure reached callback
     Sub AirPressureReachedCB(ByVal sender As BrickletBarometer, _
                              ByVal airPressure As Integer)
-        Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " mbar")
+        Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " hPa")
         Console.WriteLine("Enjoy the potentially good weather!")
     End Sub
 
@@ -26,7 +26,7 @@ Module ExampleThreshold
         ' Register air pressure reached callback to subroutine AirPressureReachedCB
         AddHandler b.AirPressureReachedCallback, AddressOf AirPressureReachedCB
 
-        ' Configure threshold for air pressure "greater than 1025 mbar"
+        ' Configure threshold for air pressure "greater than 1025 hPa"
         b.SetAirPressureCallbackThreshold(">"C, 1025*1000, 0)
 
         Console.WriteLine("Press key to exit")

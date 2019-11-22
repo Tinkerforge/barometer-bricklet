@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // is dropped, so there is no need for manual cleanup.
     thread::spawn(move || {
         for air_pressure in air_pressure_receiver {
-            println!("Air Pressure: {} mbar", air_pressure as f32 / 1000.0);
+            println!("Air Pressure: {} hPa", air_pressure as f32 / 1000.0);
         }
     });
 

@@ -13,7 +13,7 @@ const UID = 'XYZ'; // Change XYZ to the UID of your Barometer Bricklet
 // Callback function for air pressure callback
 function cb_airPressure($air_pressure)
 {
-    echo "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
+    echo "Air Pressure: " . $air_pressure/1000.0 . " hPa\n";
 }
 
 $ipcon = new IPConnection(); // Create IP connection

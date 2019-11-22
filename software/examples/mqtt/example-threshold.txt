@@ -8,5 +8,5 @@ setup:
 	subscribe to tinkerforge/callback/barometer_bricklet/XYZ/air_pressure_reached
 	publish '{"register": true}' to tinkerforge/register/barometer_bricklet/XYZ/air_pressure_reached # Register air_pressure_reached callback
 	
-	# Configure threshold for air pressure "greater than 1025 mbar"
+	# Configure threshold for air pressure "greater than 1025 hPa"
 	publish '{"option": "greater", "min": 1025000, "max": 0}' to tinkerforge/request/barometer_bricklet/XYZ/set_air_pressure_callback_threshold

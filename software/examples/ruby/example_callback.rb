@@ -18,7 +18,7 @@ ipcon.connect HOST, PORT # Connect to brickd
 
 # Register air pressure callback
 b.register_callback(BrickletBarometer::CALLBACK_AIR_PRESSURE) do |air_pressure|
-  puts "Air Pressure: #{air_pressure/1000.0} mbar"
+  puts "Air Pressure: #{air_pressure/1000.0} hPa"
 end
 
 # Set period for air pressure callback to 1s (1000ms)

@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     # Get current air pressure
     air_pressure = b.get_air_pressure()
-    print("Air Pressure: " + str(air_pressure/1000.0) + " mbar")
+    print("Air Pressure: " + str(air_pressure/1000.0) + " hPa")
 
     # Get current altitude
     altitude = b.get_altitude()

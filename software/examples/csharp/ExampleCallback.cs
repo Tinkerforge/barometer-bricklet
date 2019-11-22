@@ -10,7 +10,7 @@ class Example
 	// Callback function for air pressure callback
 	static void AirPressureCB(BrickletBarometer sender, int airPressure)
 	{
-		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
+		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " hPa");
 	}
 
 	static void Main()

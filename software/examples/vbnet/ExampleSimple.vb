@@ -15,7 +15,7 @@ Module ExampleSimple
 
         ' Get current air pressure
         Dim airPressure As Integer = b.GetAirPressure()
-        Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " mbar")
+        Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " hPa")
 
         ' Get current altitude
         Dim altitude As Integer = b.GetAltitude()

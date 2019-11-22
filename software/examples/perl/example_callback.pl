@@ -13,7 +13,7 @@ sub cb_air_pressure
 {
     my ($air_pressure) = @_;
 
-    print "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
+    print "Air Pressure: " . $air_pressure/1000.0 . " hPa\n";
 }
 
 my $ipcon = Tinkerforge::IPConnection->new(); # Create IP connection

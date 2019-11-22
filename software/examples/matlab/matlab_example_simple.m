@@ -14,7 +14,7 @@ function matlab_example_simple()
 
     % Get current air pressure
     airPressure = b.getAirPressure();
-    fprintf('Air Pressure: %g mbar\n', airPressure/1000.0);
+    fprintf('Air Pressure: %g hPa\n', airPressure/1000.0);
 
     % Get current altitude
     altitude = b.getAltitude();

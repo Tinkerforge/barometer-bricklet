@@ -10,7 +10,7 @@ from tinkerforge.bricklet_barometer import BrickletBarometer
 
 # Callback function for air pressure callback
 def cb_air_pressure(air_pressure):
-    print("Air Pressure: " + str(air_pressure/1000.0) + " mbar")
+    print("Air Pressure: " + str(air_pressure/1000.0) + " hPa")
 
 if __name__ == "__main__":
     ipcon = IPConnection() # Create IP connection

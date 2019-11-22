@@ -8,7 +8,7 @@ Module ExampleCallback
 
     ' Callback subroutine for air pressure callback
     Sub AirPressureCB(ByVal sender As BrickletBarometer, ByVal airPressure As Integer)
-        Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " mbar")
+        Console.WriteLine("Air Pressure: " + (airPressure/1000.0).ToString() + " hPa")
     End Sub
 
     Sub Main()

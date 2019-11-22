@@ -20,7 +20,7 @@ public class ExampleCallback {
 		// Add air pressure listener
 		b.addAirPressureListener(new BrickletBarometer.AirPressureListener() {
 			public void airPressure(int airPressure) {
-				System.out.println("Air Pressure: " + airPressure/1000.0 + " mbar");
+				System.out.println("Air Pressure: " + airPressure/1000.0 + " hPa");
 			}
 		});
 

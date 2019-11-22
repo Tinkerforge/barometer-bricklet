@@ -23,12 +23,12 @@ public class ExampleThreshold {
 		// Add air pressure reached listener
 		b.addAirPressureReachedListener(new BrickletBarometer.AirPressureReachedListener() {
 			public void airPressureReached(int airPressure) {
-				System.out.println("Air Pressure: " + airPressure/1000.0 + " mbar");
+				System.out.println("Air Pressure: " + airPressure/1000.0 + " hPa");
 				System.out.println("Enjoy the potentially good weather!");
 			}
 		});
 
-		// Configure threshold for air pressure "greater than 1025 mbar"
+		// Configure threshold for air pressure "greater than 1025 hPa"
 		b.setAirPressureCallbackThreshold('>', 1025*1000, 0);
 
 		System.out.println("Press key to exit"); System.in.read();

@@ -22,11 +22,11 @@ func main() {
 	b.SetDebouncePeriod(10000)
 
 	b.RegisterAirPressureReachedCallback(func(airPressure int32) {
-		fmt.Printf("Air Pressure: %f mbar\n", float64(airPressure)/1000.0)
+		fmt.Printf("Air Pressure: %f hPa\n", float64(airPressure)/1000.0)
 		fmt.Println("Enjoy the potentially good weather!")
 	})
 
-	// Configure threshold for air pressure "greater than 1025 mbar".
+	// Configure threshold for air pressure "greater than 1025 hPa".
 	b.SetAirPressureCallbackThreshold('>', 1025*1000, 0)
 
 	fmt.Print("Press enter to exit.")

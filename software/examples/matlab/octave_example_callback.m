@@ -25,5 +25,5 @@ end
 
 % Callback function for air pressure callback
 function cb_air_pressure(e)
-    fprintf("Air Pressure: %g mbar\n", e.airPressure/1000.0);
+    fprintf("Air Pressure: %g hPa\n", e.airPressure/1000.0);
 end

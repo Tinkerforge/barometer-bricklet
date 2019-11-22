@@ -13,7 +13,7 @@ const UID = 'XYZ'; // Change XYZ to the UID of your Barometer Bricklet
 // Callback function for air pressure reached callback
 function cb_airPressureReached($air_pressure)
 {
-    echo "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
+    echo "Air Pressure: " . $air_pressure/1000.0 . " hPa\n";
     echo "Enjoy the potentially good weather!\n";
 }
 
@@ -30,7 +30,7 @@ $b->setDebouncePeriod(10000);
 $b->registerCallback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED,
                      'cb_airPressureReached');
 
-// Configure threshold for air pressure "greater than 1025 mbar"
+// Configure threshold for air pressure "greater than 1025 hPa"
 $b->setAirPressureCallbackThreshold('>', 1025*1000, 0);
 
 echo "Press ctrl+c to exit\n";

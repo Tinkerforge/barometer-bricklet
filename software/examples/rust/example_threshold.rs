@@ -22,12 +22,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     // is dropped, so there is no need for manual cleanup.
     thread::spawn(move || {
         for air_pressure_reached in air_pressure_reached_receiver {
-            println!("Air Pressure: {} mbar", air_pressure_reached as f32 / 1000.0);
+            println!("Air Pressure: {} hPa", air_pressure_reached as f32 / 1000.0);
             println!("Enjoy the potentially good weather!");
         }
     });
 
-    // Configure threshold for air pressure "greater than 1025 mbar".
+    // Configure threshold for air pressure "greater than 1025 hPa".
     b.set_air_pressure_callback_threshold('>', 1025 * 1000, 0);
 
     println!("Press enter to exit.");

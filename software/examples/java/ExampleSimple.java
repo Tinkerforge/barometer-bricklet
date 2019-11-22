@@ -19,7 +19,7 @@ public class ExampleSimple {
 
 		// Get current air pressure
 		int airPressure = b.getAirPressure(); // Can throw com.tinkerforge.TimeoutException
-		System.out.println("Air Pressure: " + airPressure/1000.0 + " mbar");
+		System.out.println("Air Pressure: " + airPressure/1000.0 + " hPa");
 
 		// Get current altitude
 		int altitude = b.getAltitude(); // Can throw com.tinkerforge.TimeoutException

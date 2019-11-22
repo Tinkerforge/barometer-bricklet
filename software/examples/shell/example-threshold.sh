@@ -8,9 +8,9 @@ tinkerforge call barometer-bricklet $uid set-debounce-period 10000
 
 # Handle incoming air pressure reached callbacks
 tinkerforge dispatch barometer-bricklet $uid air-pressure-reached\
- --execute "echo Air Pressure: {air_pressure}/1000 mbar. Enjoy the potentially good weather!" &
+ --execute "echo Air Pressure: {air_pressure}/1000 hPa. Enjoy the potentially good weather!" &
 
-# Configure threshold for air pressure "greater than 1025 mbar"
+# Configure threshold for air pressure "greater than 1025 hPa"
 tinkerforge call barometer-bricklet $uid set-air-pressure-callback-threshold threshold-option-greater 1025000 0
 
 echo "Press key to exit"; read dummy

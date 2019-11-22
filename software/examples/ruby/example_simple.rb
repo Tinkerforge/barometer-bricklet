@@ -18,7 +18,7 @@ ipcon.connect HOST, PORT # Connect to brickd
 
 # Get current air pressure
 air_pressure = b.get_air_pressure
-puts "Air Pressure: #{air_pressure/1000.0} mbar"
+puts "Air Pressure: #{air_pressure/1000.0} hPa"
 
 # Get current altitude
 altitude = b.get_altitude

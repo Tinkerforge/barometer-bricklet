@@ -19,7 +19,7 @@ Notebook[{
    RowBox[{"
 "}],
    RowBox[{"(*", "Callback function for air pressure callback", "*)"}],
-   RowBox[{RowBox[{"AirPressureCB", "[", RowBox[{"sender_", ",", "airPressure_"}], "]"}], ":=", "\[IndentingNewLine]", RowBox[{"Print", "[", RowBox[{"\"\<Air Pressure: \>\"", "<>", RowBox[{"ToString", "[", RowBox[{"N", "[", RowBox[{"Quantity", "[", RowBox[{"airPressure", ",", "\"\<mbar/1000\>\""}], "]"}], "]"}], "]"}]}], "]"}]}],
+   RowBox[{RowBox[{"AirPressureCB", "[", RowBox[{"sender_", ",", "airPressure_"}], "]"}], ":=", "\[IndentingNewLine]", RowBox[{"Print", "[", RowBox[{"\"\<Air Pressure: \>\"", "<>", RowBox[{"ToString", "[", RowBox[{"N", "[", RowBox[{"Quantity", "[", RowBox[{"airPressure", ",", "\"\<hPa/1000\>\""}], "]"}], "]"}], "]"}]}], "]"}]}],
    RowBox[{"AddEventHandler", "[", RowBox[{RowBox[{"b", "@", "AirPressureCallback"}], ",", "AirPressureCB"}], "]"}],
    RowBox[{"
 "}],

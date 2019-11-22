@@ -21,11 +21,11 @@ b.set_debounce_period 10000
 
 # Register air pressure reached callback
 b.register_callback(BrickletBarometer::CALLBACK_AIR_PRESSURE_REACHED) do |air_pressure|
-  puts "Air Pressure: #{air_pressure/1000.0} mbar"
+  puts "Air Pressure: #{air_pressure/1000.0} hPa"
   puts 'Enjoy the potentially good weather!'
 end
 
-# Configure threshold for air pressure "greater than 1025 mbar"
+# Configure threshold for air pressure "greater than 1025 hPa"
 b.set_air_pressure_callback_threshold '>', 1025*1000, 0
 
 puts 'Press key to exit'

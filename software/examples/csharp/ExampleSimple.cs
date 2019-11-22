@@ -17,7 +17,7 @@ class Example
 
 		// Get current air pressure
 		int airPressure = b.GetAirPressure();
-		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
+		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " hPa");
 
 		// Get current altitude
 		int altitude = b.GetAltitude();

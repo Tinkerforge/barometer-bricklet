@@ -10,7 +10,7 @@ class Example
 	// Callback function for air pressure reached callback
 	static void AirPressureReachedCB(BrickletBarometer sender, int airPressure)
 	{
-		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " mbar");
+		Console.WriteLine("Air Pressure: " + airPressure/1000.0 + " hPa");
 		Console.WriteLine("Enjoy the potentially good weather!");
 	}
 
@@ -28,7 +28,7 @@ class Example
 		// Register air pressure reached callback to function AirPressureReachedCB
 		b.AirPressureReachedCallback += AirPressureReachedCB;
 
-		// Configure threshold for air pressure "greater than 1025 mbar"
+		// Configure threshold for air pressure "greater than 1025 hPa"
 		b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
 
 		Console.WriteLine("Press enter to exit");

@@ -29,7 +29,7 @@ var
 procedure TExample.AirPressureReachedCB(sender: TBrickletBarometer;
                                         const airPressure: longint);
 begin
-  WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
+  WriteLn(Format('Air Pressure: %f hPa', [airPressure/1000.0]));
   WriteLn('Enjoy the potentially good weather!');
 end;
 
@@ -51,7 +51,7 @@ begin
   { Register air pressure reached callback to procedure AirPressureReachedCB }
   b.OnAirPressureReached := {$ifdef FPC}@{$endif}AirPressureReachedCB;
 
-  { Configure threshold for air pressure "greater than 1025 mbar" }
+  { Configure threshold for air pressure "greater than 1025 hPa" }
   b.SetAirPressureCallbackThreshold('>', 1025*1000, 0);
 
   WriteLn('Press key to exit');

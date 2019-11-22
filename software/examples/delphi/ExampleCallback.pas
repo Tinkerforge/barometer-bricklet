@@ -27,7 +27,7 @@ var
 { Callback procedure for air pressure callback }
 procedure TExample.AirPressureCB(sender: TBrickletBarometer; const airPressure: longint);
 begin
-  WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
+  WriteLn(Format('Air Pressure: %f hPa', [airPressure/1000.0]));
 end;
 
 procedure TExample.Execute;

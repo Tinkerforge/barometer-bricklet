@@ -16,7 +16,7 @@ $ipcon->connect(&HOST, &PORT); # Connect to brickd
 
 # Get current air pressure
 my $air_pressure = $b->get_air_pressure();
-print "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
+print "Air Pressure: " . $air_pressure/1000.0 . " hPa\n";
 
 # Get current altitude
 my $altitude = $b->get_altitude();

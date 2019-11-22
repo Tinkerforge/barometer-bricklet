@@ -30,7 +30,7 @@ int main(void) {
 		return 1;
 	}
 
-	printf("Air Pressure: %f mbar\n", air_pressure/1000.0);
+	printf("Air Pressure: %f hPa\n", air_pressure/1000.0);
 
 	// Get current altitude
 	int32_t altitude;

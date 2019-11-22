@@ -19,7 +19,7 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
         // Get current air pressure
         b.getAirPressure(
             function (airPressure) {
-                console.log('Air Pressure: ' + airPressure/1000.0 + ' mbar');
+                console.log('Air Pressure: ' + airPressure/1000.0 + ' hPa');
             },
             function (error) {
                 console.log('Error: ' + error);

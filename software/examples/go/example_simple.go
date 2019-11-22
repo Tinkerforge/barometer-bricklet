@@ -20,7 +20,7 @@ func main() {
 
 	// Get current air pressure.
 	airPressure, _ := b.GetAirPressure()
-	fmt.Printf("Air Pressure: %f mbar\n", float64(airPressure)/1000.0)
+	fmt.Printf("Air Pressure: %f hPa\n", float64(airPressure)/1000.0)
 
 	// Get current altitude.
 	altitude, _ := b.GetAltitude()

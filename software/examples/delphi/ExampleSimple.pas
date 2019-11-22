@@ -38,7 +38,7 @@ begin
 
   { Get current air pressure }
   airPressure := b.GetAirPressure;
-  WriteLn(Format('Air Pressure: %f mbar', [airPressure/1000.0]));
+  WriteLn(Format('Air Pressure: %f hPa', [airPressure/1000.0]));
 
   { Get current altitude }
   altitude := b.GetAltitude;

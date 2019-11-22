@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // Get current air pressure.
     let air_pressure = b.get_air_pressure().recv()?;
-    println!("Air Pressure: {} mbar", air_pressure as f32 / 1000.0);
+    println!("Air Pressure: {} hPa", air_pressure as f32 / 1000.0);
 
     // Get current altitude.
     let altitude = b.get_altitude().recv()?;

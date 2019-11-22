@@ -27,7 +27,7 @@ ipcon.on(Tinkerforge.IPConnection.CALLBACK_CONNECTED,
 b.on(Tinkerforge.BrickletBarometer.CALLBACK_AIR_PRESSURE,
     // Callback function for air pressure callback
     function (airPressure) {
-        console.log('Air Pressure: ' + airPressure/1000.0 + ' mbar');
+        console.log('Air Pressure: ' + airPressure/1000.0 + ' hPa');
     }
 );
 

@@ -13,7 +13,7 @@ sub cb_air_pressure_reached
 {
     my ($air_pressure) = @_;
 
-    print "Air Pressure: " . $air_pressure/1000.0 . " mbar\n";
+    print "Air Pressure: " . $air_pressure/1000.0 . " hPa\n";
     print "Enjoy the potentially good weather!\n";
 }
 
@@ -29,7 +29,7 @@ $b->set_debounce_period(10000);
 # Register air pressure reached callback to subroutine cb_air_pressure_reached
 $b->register_callback($b->CALLBACK_AIR_PRESSURE_REACHED, 'cb_air_pressure_reached');
 
-# Configure threshold for air pressure "greater than 1025 mbar"
+# Configure threshold for air pressure "greater than 1025 hPa"
 $b->set_air_pressure_callback_threshold('>', 1025*1000, 0);
 
 print "Press key to exit\n";

@@ -11,7 +11,7 @@
 void cb_air_pressure_reached(int32_t air_pressure, void *user_data) {
 	(void)user_data; // avoid unused parameter warning
 
-	printf("Air Pressure: %f mbar\n", air_pressure/1000.0);
+	printf("Air Pressure: %f hPa\n", air_pressure/1000.0);
 	printf("Enjoy the potentially good weather!\n");
 }
 
@@ -40,7 +40,7 @@ int main(void) {
 	                            (void (*)(void))cb_air_pressure_reached,
 	                            NULL);
 
-	// Configure threshold for air pressure "greater than 1025 mbar"
+	// Configure threshold for air pressure "greater than 1025 hPa"
 	barometer_set_air_pressure_callback_threshold(&b, '>', 1025*1000, 0);
 
 	printf("Press key to exit\n");

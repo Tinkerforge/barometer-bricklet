@@ -16,13 +16,13 @@ b@SetDebouncePeriod[10000]
 (*Callback function for air pressure reached callback*)
 AirPressureReachedCB[sender_,airPressure_]:=
  Module[{},
-  Print["Air Pressure: "<>ToString[N[Quantity[airPressure,"mbar/1000"]]]];
+  Print["Air Pressure: "<>ToString[N[Quantity[airPressure,"hPa/1000"]]]];
   Print["Enjoy the potentially good weather!"]
  ]
 
 AddEventHandler[b@AirPressureReachedCallback,AirPressureReachedCB]
 
-(*Configure threshold for air pressure "greater than 1025 mbar"*)
+(*Configure threshold for air pressure "greater than 1025 hPa"*)
 option=Tinkerforge`BrickletBarometer`THRESHOLDUOPTIONUGREATER
 b@SetAirPressureCallbackThreshold[option,1025*1000,0]
 
