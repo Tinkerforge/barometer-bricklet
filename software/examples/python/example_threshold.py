@@ -29,5 +29,5 @@ if __name__ == "__main__":
     # Configure threshold for air pressure "greater than 1025 hPa"
     b.set_air_pressure_callback_threshold(">", 1025*1000, 0)
 
-    raw_input("Press key to exit\n") # Use input() in Python 3
+    input("Press key to exit\n") # Use raw_input() in Python 2
     ipcon.disconnect()

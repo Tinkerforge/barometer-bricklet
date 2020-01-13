@@ -23,5 +23,5 @@ if __name__ == "__main__":
     altitude = b.get_altitude()
     print("Altitude: " + str(altitude/100.0) + " m")
 
-    raw_input("Press key to exit\n") # Use input() in Python 3
+    input("Press key to exit\n") # Use raw_input() in Python 2
     ipcon.disconnect()
