@@ -26,6 +26,9 @@
 
 #include "bricklib/com/com_common.h"
 
+#define I2C_MODE_FAST 0
+#define I2C_MODE_SLOW 1
+
 #define I2C_EEPROM_ADDRESS_HIGH 84
 
 #define I2C_ADDRESS_HIGH 118 // 0b1110110
@@ -83,8 +86,10 @@
 #define FID_GET_REFERENCE_AIR_PRESSURE 19
 #define FID_SET_AVERAGING 20
 #define FID_GET_AVERAGING 21
+#define FID_SET_I2C_MODE 22
+#define FID_GET_I2C_MODE 23
 
-#define FID_LAST 21
+#define FID_LAST 23
 
 typedef struct {
 	MessageHeader header;
@@ -127,11 +132,27 @@ typedef struct {
 	uint8_t average_temperature;
 } __attribute__((__packed__)) GetAveragingReturn;
 
+typedef struct {
+	MessageHeader header;
+} __attribute__((__packed__)) GetI2CMode;
+
+typedef struct {
+	MessageHeader header;
+	uint8_t mode;
+} __attribute__((__packed__)) GetI2CModeReturn;
+
+typedef struct {
+	MessageHeader header;
+	uint8_t mode;
+} __attribute__((__packed__)) SetI2CMode;
+
 void get_chip_temperature_(const ComType com, const GetChipTemperature_ *data);
 void set_reference_air_pressure(const ComType com, const SetReferenceAirPressure *data);
 void get_reference_air_pressure(const ComType com, const GetReferenceAirPressure *data);
 void set_averaging(const ComType com, const SetAveraging *data);
 void get_averaging(const ComType com, const GetAveraging *data);
+void get_i2c_mode(const ComType com, const GetI2CMode *data);
+void set_i2c_mode(const ComType com, const SetI2CMode *data);
 
 void calculate(void);
 void update_avg(const uint32_t dx, uint32_t *sum, uint32_t *avg, uint8_t *tick, const uint8_t avg_len);

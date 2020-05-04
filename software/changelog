@@ -19,3 +19,6 @@
 
 2013-12-19: 2.0.2 (eb235e4)
 - Fix wrong length for GetDebounce packet (through brickletlib)
+
+2020-05-04: 2.0.3 (<unknown>)
+- Add get/set_i2c_mode to mitigate EMI issues

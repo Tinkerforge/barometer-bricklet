@@ -33,7 +33,7 @@
 
 #define BRICKLET_FIRMWARE_VERSION_MAJOR 2
 #define BRICKLET_FIRMWARE_VERSION_MINOR 0
-#define BRICKLET_FIRMWARE_VERSION_REVISION 2
+#define BRICKLET_FIRMWARE_VERSION_REVISION 3
 
 #define BRICKLET_HARDWARE_VERSION_MAJOR 1
 #define BRICKLET_HARDWARE_VERSION_MINOR 0
@@ -108,6 +108,8 @@ typedef struct {
 	uint8_t num_moving_average;
 	uint8_t num_average_d1;
 	uint8_t num_average_d2;
+
+	uint8_t i2c_mode;
 } /*__attribute__((packed))*/ BrickContext;
 
 #endif

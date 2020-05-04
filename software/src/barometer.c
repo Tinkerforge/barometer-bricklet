@@ -94,6 +94,16 @@ void invocation(const ComType com, const uint8_t *data) {
 			return;
 		}
 
+		case FID_SET_I2C_MODE: {
+			set_i2c_mode(com, (SetI2CMode*)data);
+			break;
+		}
+
+		case FID_GET_I2C_MODE: {
+			get_i2c_mode(com, (GetI2CMode*)data);
+			break;
+		}
+
 		default: {
 			simple_invocation(com, data);
 			break;
@@ -139,6 +149,7 @@ void constructor(void) {
 	ms561101b_write(MS561101BA_D1 | MS561101BA_OSR);
 
 	BC->pending_d = MS561101BA_D1;
+	BC->i2c_mode = 0;
 }
 
 void destructor(void) {
@@ -363,6 +374,12 @@ uint8_t ms561101b_get_address(void) {
 
 bool ms561101b_write(const uint8_t command) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
+		if(BC->i2c_mode == I2C_MODE_SLOW) {
+			// Switch to 100khz
+			BA->twid->pTwi->TWI_CWGR = 0;
+			BA->twid->pTwi->TWI_CWGR = (1 << 16) | (158<< 8) | 158;
+		}
+
 		BA->bricklet_select(BS->port - 'a');
 		Twi* twi = BA->twid->pTwi;
 
@@ -374,6 +391,10 @@ bool ms561101b_write(const uint8_t command) {
 		while(!((twi->TWI_SR & TWI_SR_TXCOMP) == TWI_SR_TXCOMP));
 
 		BA->bricklet_deselect(BS->port - 'a');
+		// Switch back to 400khz
+		BA->twid->pTwi->TWI_CWGR = 0;
+		BA->twid->pTwi->TWI_CWGR = (76 << 8) | 76;
+
 		BA->mutex_give(*BA->mutex_twi_bricklet);
 
 		return true;
@@ -414,6 +435,13 @@ void ms561101b_read_calibration(void) {
 	uint16_t prom[MS561101BA_PROM_COUNT];
 
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
+		// The calibration is read in the constructor, so
+		// the user had no chance yet to slow down the I2C bus.
+		// To protect against EMI, always read the calibration slow.
+		// Switch to 100khz
+		BA->twid->pTwi->TWI_CWGR = 0;
+		BA->twid->pTwi->TWI_CWGR = (1 << 16) | (158<< 8) | 158;
+
 		uint8_t bytes[2];
 
 		BA->bricklet_select(BS->port - 'a');
@@ -426,6 +454,11 @@ void ms561101b_read_calibration(void) {
 		}
 
 		BA->bricklet_deselect(BS->port - 'a');
+
+		// Switch back to 400khz
+		BA->twid->pTwi->TWI_CWGR = 0;
+		BA->twid->pTwi->TWI_CWGR = (76 << 8) | 76;
+
 		BA->mutex_give(*BA->mutex_twi_bricklet);
 	}
 
@@ -440,6 +473,12 @@ bool ms561101b_read_adc(uint32_t *value) {
 	if(BA->mutex_take(*BA->mutex_twi_bricklet, 10)) {
 		uint8_t bytes[3];
 
+		if(BC->i2c_mode == I2C_MODE_SLOW) {
+			// Switch to 100khz
+			BA->twid->pTwi->TWI_CWGR = 0;
+			BA->twid->pTwi->TWI_CWGR = (1 << 16) | (158<< 8) | 158;
+		}
+
 		BA->bricklet_select(BS->port - 'a');
 		BA->TWID_Read(BA->twid, ms561101b_get_address(), MS561101BA_ADC_READ,
 		              1, bytes, 3, NULL);
@@ -447,10 +486,36 @@ bool ms561101b_read_adc(uint32_t *value) {
 		*value = (bytes[0] << 16) | (bytes[1] << 8) | bytes[2];
 
 		BA->bricklet_deselect(BS->port - 'a');
+
+		// Switch back to 400khz
+		BA->twid->pTwi->TWI_CWGR = 0;
+		BA->twid->pTwi->TWI_CWGR = (76 << 8) | 76;
+
 		BA->mutex_give(*BA->mutex_twi_bricklet);
 
 		return true;
 	}
 
 	return false;
+}
+
+
+void get_i2c_mode(const ComType com, const GetI2CMode *data) {
+	GetI2CModeReturn gi2cmr;
+
+	gi2cmr.header         = data->header;
+	gi2cmr.header.length  = sizeof(GetI2CModeReturn);
+	gi2cmr.mode           = BC->i2c_mode;
+
+	BA->send_blocking_with_timeout(&gi2cmr, sizeof(GetI2CModeReturn), com);
+}
+
+void set_i2c_mode(const ComType com, const SetI2CMode *data) {
+	if(data->mode > I2C_MODE_SLOW) {
+		BA->com_return_error(data, sizeof(MessageHeader), MESSAGE_ERROR_CODE_INVALID_PARAMETER, com);
+		return;
+	}
+
+	BC->i2c_mode = data->mode;
+	BA->com_return_setter(com, data);
 }
